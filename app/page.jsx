@@ -3,24 +3,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// 🟦 DEFINE JSON STRUCTURE (VERY IMPORTANT)
-interface Voter {
-  serial_no: number;
-  voter_id: string;
-  name_marathi: string;
-  relation_name_marathi: string;
-  relation_type: string;
-  house_no: string;
-  age: number;
-  gender: string;
-  source_page?: number;
-}
-
 export default function Page() {
   const [query, setQuery] = useState("");
-  const [voters, setVoters] = useState<Voter[]>([]);      // FIXED
-  const [filtered, setFiltered] = useState<Voter[]>([]);  // FIXED
-  const [selected, setSelected] = useState<Voter | null>(null); // FIXED
+  const [voters, setVoters] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [selected, setSelected] = useState(null);
 
   // Load JSON from public/voters.json
   useEffect(() => {
@@ -29,19 +16,15 @@ export default function Page() {
       .then((data) => setVoters(data));
   }, []);
 
-  // Filter logic
+  // Filter list
   useEffect(() => {
-    if (!query.trim()) {
-      setFiltered([]);
-      return;
-    }
+    if (!query) return setFiltered([]);
 
-    const q = query.toLowerCase();
+    const q = query.trim().toLowerCase();
 
     const results = voters.filter((v) =>
-      v.name_marathi.toLowerCase().includes(q) ||
-      v.relation_name_marathi.toLowerCase().includes(q) ||
-      v.house_no.toLowerCase().includes(q)
+      v.surname.toLowerCase().includes(q) ||
+      v.fullname.toLowerCase().includes(q)
     );
 
     setFiltered(results);
@@ -53,11 +36,11 @@ export default function Page() {
         Voter Search
       </h1>
 
-      {/* Search Box */}
+      {/* Search bar animation */}
       <motion.input
         layout
         type="text"
-        placeholder="Search by नाव / घर क्रमांक / नाते…"
+        placeholder="Search surname…"
         className="w-full p-4 mb-6 rounded-xl bg-white shadow focus:ring-2
                    focus:ring-blue-500 outline-none text-gray-800"
         value={query}
@@ -66,7 +49,7 @@ export default function Page() {
         animate={{ opacity: 1, y: 0 }}
       />
 
-      {/* Results */}
+      {/* Results list */}
       <AnimatePresence>
         {filtered.length > 0 && (
           <motion.div
@@ -78,7 +61,7 @@ export default function Page() {
           >
             {filtered.map((voter) => (
               <motion.div
-                key={voter.voter_id}
+                key={voter.id}
                 layout
                 className="p-4 bg-white rounded-xl shadow cursor-pointer border
                            hover:bg-blue-50 transition-all"
@@ -87,10 +70,10 @@ export default function Page() {
                 animate={{ opacity: 1, y: 0 }}
               >
                 <h2 className="text-lg font-semibold text-gray-700">
-                  {voter.name_marathi}
+                  {voter.fullname}
                 </h2>
                 <p className="text-gray-500 text-sm">
-                  घर क्रमांक: {voter.house_no} • वय: {voter.age}
+                  House: {voter.house} • Age: {voter.age}
                 </p>
               </motion.div>
             ))}
@@ -116,18 +99,16 @@ export default function Page() {
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                {selected.name_marathi}
+                {selected.fullname}
               </h2>
 
               <div className="space-y-2 text-gray-700">
-                <p><b>घर क्रमांक:</b> {selected.house_no}</p>
-                <p><b>नाते:</b> {selected.relation_name_marathi}</p>
+                <p><b>घर क्रमांक:</b> {selected.house}</p>
+                <p><b>नाते:</b> {selected.relation}</p>
                 <p><b>वय:</b> {selected.age}</p>
-                <p><b>EPIC:</b> {selected.voter_id}</p>
-                <p><b>अ. क्र.:</b> {selected.serial_no}</p>
-                {selected.source_page && (
-                  <p><b>पृष्ठ:</b> {selected.source_page}</p>
-                )}
+                <p><b>EPIC:</b> {selected.epic}</p>
+                <p><b>सेक्शन:</b> {selected.section}</p>
+                <p><b>अ. क्र.:</b> {selected.serial}</p>
               </div>
 
               <button

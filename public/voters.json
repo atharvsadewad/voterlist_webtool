@@ -1,0 +1,202 @@
+[
+  {
+    "serial_no": 1,
+    "voter_id": "WLT6590830",
+    "name_marathi": "वाचळकर विनीत विष्णुकांत",
+    "relation_name_marathi": "वाचळकर विष्णुकांत",
+    "relation_type": "Father",
+    "house_no": "187",
+    "age": 32,
+    "gender": "Male"
+  },
+  {
+    "serial_no": 2,
+    "voter_id": "WLT6590822",
+    "name_marathi": "वायचळकर कपिल",
+    "relation_name_marathi": "वायचळकर विष्णुकांत",
+    "relation_type": "Father",
+    "house_no": "187",
+    "age": 33,
+    "gender": "Male"
+  },
+  {
+    "serial_no": 3,
+    "voter_id": "HSX2147536",
+    "name_marathi": "वायचळकर रेणुका विष्णुकांत",
+    "relation_name_marathi": "वायचळकर विष्णुकांत",
+    "relation_type": "Husband",
+    "house_no": "3.2.187",
+    "age": 69,
+    "gender": "Female"
+  },
+  {
+    "serial_no": 4,
+    "voter_id": "HSX2147544",
+    "name_marathi": "वायचळकर वैशाली विष्णुकांत",
+    "relation_name_marathi": "वायचळकर विष्णुकांत",
+    "relation_type": "Father",
+    "house_no": "3.2.187",
+    "age": 39,
+    "gender": "Female"
+  },
+  {
+    "serial_no": 5,
+    "voter_id": "WLT7104045",
+    "name_marathi": "सौदागर सना समरीन",
+    "relation_name_marathi": "सौदागर सलीम",
+    "relation_type": "Father",
+    "house_no": "3-2-602",
+    "age": 28,
+    "gender": "Female"
+  },
+  {
+    "serial_no": 6,
+    "voter_id": "WLT0984880",
+    "name_marathi": "राठी विशाल अशोककुमार",
+    "relation_name_marathi": "राठी अशोककुमार",
+    "relation_type": "Father",
+    "house_no": "32604",
+    "age": 35,
+    "gender": "Male"
+  },
+  {
+    "serial_no": 7,
+    "voter_id": "WLT0984898",
+    "name_marathi": "राठी पुनम अशोककुमार",
+    "relation_name_marathi": "राठी अशोककुमार",
+    "relation_type": "Husband",
+    "house_no": "32605",
+    "age": 36,
+    "gender": "Female"
+  },
+  {
+    "serial_no": 8,
+    "voter_id": "WLT0376798",
+    "name_marathi": "एक्नारकर श्रीपाद वसंतराव",
+    "relation_name_marathi": "एक्नारकर वसंतराव",
+    "relation_type": "Father",
+    "house_no": "32620",
+    "age": 39,
+    "gender": "Male"
+  },
+  {
+    "serial_no": 9,
+    "voter_id": "HSX1405372",
+    "name_marathi": "कुलकर्णी वसंत विठठलराव",
+    "relation_name_marathi": "कुलकर्णी विठठलराव",
+    "relation_type": "Father",
+    "house_no": "3.2.620",
+    "age": 75,
+    "gender": "Male"
+  },
+  {
+    "serial_no": 10,
+    "voter_id": "HSX1405364",
+    "name_marathi": "कुलकर्णी शोभा वसंतराव",
+    "relation_name_marathi": "कुलकर्णी वसंतराव",
+    "relation_type": "Husband",
+    "house_no": "3.2.620",
+    "age": 68,
+    "gender": "Female"
+  },
+  {
+    "serial_no": 11,
+    "voter_id": "WLT6590947",
+    "name_marathi": "कुलकर्णी श्रीपाद वसंतराव",
+    "relation_name_marathi": "कुलकर्णी वसंतराव",
+    "relation_type": "Father",
+    "house_no": "3.2.620",
+    "age": 41,
+    "gender": "Male"
+  },
+  {
+    "serial_no": 12,
+    "voter_id": "HSX2146330",
+    "name_marathi": "कुलकर्णी दिनकर विठ्ठलराव",
+    "relation_name_marathi": "कुलकर्णी विठ्ठलराव",
+    "relation_type": "Father",
+    "house_no": "32620",
+    "age": 58,
+    "gender": "Male"
+  },
+  {
+    "serial_no": 13,
+    "voter_id": "HSX1406354",
+    "name_marathi": "बोळेगावे विनायक शंकर",
+    "relation_name_marathi": "बोळेगावे शंकर",
+    "relation_type": "Father",
+    "house_no": "3.2.626",
+    "age": 60,
+    "gender": "Male"
+  },
+  {
+    "serial_no": 14,
+    "voter_id": "HSX1404110",
+    "name_marathi": "बोळेगावे महेश विनायकराव",
+    "relation_name_marathi": "बोळेगावे विनायकराव",
+    "relation_type": "Father",
+    "house_no": "3.2.626",
+    "age": 39,
+    "gender": "Male"
+  },
+  {
+    "serial_no": 15,
+    "voter_id": "WLT0424762",
+    "name_marathi": "केंद्रे जीवनरव पुंडलीकराव",
+    "relation_name_marathi": "केंद्रे पुंडलीकराव",
+    "relation_type": "Father",
+    "house_no": "631",
+    "age": 68,
+    "gender": "Male"
+  },
+  {
+    "serial_no": 16,
+    "voter_id": "WLT7724982",
+    "name_marathi": "पाटील बाबासाहेब शेषेराव",
+    "relation_name_marathi": "पाटील शेषेराव",
+    "relation_type": "Father",
+    "house_no": "631",
+    "age": 71,
+    "gender": "Male"
+  },
+  {
+    "serial_no": 17,
+    "voter_id": "WLT7724990",
+    "name_marathi": "पाटील दुष्यंतला बाबासाहेब",
+    "relation_name_marathi": "पाटील बाबासाहेब",
+    "relation_type": "Husband",
+    "house_no": "631",
+    "age": 61,
+    "gender": "Female"
+  },
+  {
+    "serial_no": 18,
+    "voter_id": "WLT7725005",
+    "name_marathi": "राजुरे रेखा चणबसप्पा",
+    "relation_name_marathi": "राजुरे चणबसप्पा",
+    "relation_type": "Husband",
+    "house_no": "632",
+    "age": 76,
+    "gender": "Female"
+  },
+  {
+    "serial_no": 19,
+    "voter_id": "WLT0510154",
+    "name_marathi": "साबणे शकुंतला दिलीप",
+    "relation_name_marathi": "साबणे दिलीप",
+    "relation_type": "Husband",
+    "house_no": "633",
+    "age": 59,
+    "gender": "Female"
+  },
+  {
+    "serial_no": 20,
+    "voter_id": "HSX1408129",
+    "name_marathi": "साबणे दिलीप लक्ष्मणराव",
+    "relation_name_marathi": "साबणे लक्ष्मणराव",
+    "relation_type": "Father",
+    "house_no": "633",
+    "age": 53,
+    "gender": "Male"
+  }
+]
