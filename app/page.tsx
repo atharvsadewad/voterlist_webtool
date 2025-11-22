@@ -49,7 +49,7 @@ export default function Page() {
 
       {/* TITLE */}
       <h1 className="text-3xl font-semibold text-gray-800 mb-6 text-center">
-        🗳️ Ward No. 8 — Voter Search
+        🗳️ Ward No. 16 — Voter Search
       </h1>
 
       {/* SEARCH BAR */}
@@ -57,7 +57,7 @@ export default function Page() {
         <motion.input
           layout
           type="text"
-          placeholder="Search नाव / आडनाव…"
+          placeholder="Search नाव / आडनाव / EPIC…"
           className="w-full p-4 rounded-xl bg-white shadow focus:ring-2 
                      focus:ring-blue-500 outline-none text-gray-800"
           value={query}
