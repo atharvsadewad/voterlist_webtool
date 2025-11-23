@@ -1,34 +1,36 @@
+import { FaFacebookF, FaInstagram } from "react-icons/fa";
+
 export default function Footer() {
   return (
-    <footer className="mt-12 mb-8 text-sm text-gray-600 dark:text-gray-300">
-      <div className="rounded-xl p-4 bg-white/80 dark:bg-black/40 shadow">
-        <p className="mb-2">
-          सूचना: या वेबसाईटवरील मतदार माहिती कधी कधी चुकीची असू शकते.
-          कृपया अधिकृत प्रकाशित मतदार यादी तपासून खात्री करा.
-        </p>
+    <footer className="mt-20 mb-10 text-center">
+      <h3 className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 text-transparent bg-clip-text mb-4">
+        Connect With Us
+      </h3>
 
-        <div className="flex items-center gap-4">
-          <a
-            href="https://www.instagram.com/chandan_patil_nagralkar"
-            target="_blank"
-            className="underline"
-          >
-            Instagram
-          </a>
-
-          <a
-            href="https://www.facebook.com/ChandanBaswarajPatilNagralkar?rdid=W1DtEZUwqon0vbIY"
-            target="_blank"
-            className="underline"
-          >
-            Facebook
-          </a>
-        </div>
-
-        <div className="text-xs text-gray-400 mt-3">
-          © {new Date().getFullYear()} चंदन बसवराज पाटील (नागराळकर)
-        </div>
+      <div className="flex justify-center gap-6 text-3xl mb-6">
+        <a
+          href="https://www.instagram.com/chandan_patil_nagralkar"
+          target="_blank"
+          className="text-gray-600 hover:text-yellow-500 transition"
+        >
+          <FaInstagram />
+        </a>
+        <a
+          href="https://www.facebook.com/ChandanBaswarajPatilNagralkar"
+          target="_blank"
+          className="text-gray-600 hover:text-yellow-500 transition"
+        >
+          <FaFacebookF />
+        </a>
       </div>
+
+      <p className="text-sm text-gray-500">
+        © {new Date().getFullYear()} चंदन बस्वराज पाटील (नागराळकर). All rights reserved.
+      </p>
+
+      <p className="text-sm text-gray-500 mt-1">
+        Developed by <span className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-transparent bg-clip-text font-semibold">Father’s Media</span>
+      </p>
     </footer>
   );
 }
