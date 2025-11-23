@@ -319,64 +319,89 @@ export default function Page() {
         </section>
 
         {/* ======================= SEARCH RESULTS ======================= */}
-        <section id="results" className="mt-10">
-          {filtered.length > 0 && (
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-sm text-gray-500">
-                Results: <b>{filtered.length}</b>
-              </span>
+<section id="results" className="mt-10">
+  {filtered.length > 0 && (
+    <div className="mb-4 flex items-center justify-between">
+      <span className="text-sm text-gray-500">
+        Results: <b>{filtered.length}</b>
+      </span>
 
-              <button
-                onClick={() => window.print()}
-                className="px-3 py-2 bg-green-600 text-white rounded"
-              >
-                Print
-              </button>
-            </div>
-          )}
-
-          {/* PRINT-ONLY SECTION */}
-<div id="print-area" className="hidden print:block px-6">
-  <h2 className="text-xl font-semibold mb-4">
-    Printed Voter List ({filtered.length})
-  </h2>
-
-  <div className="columns-2 gap-6">
-    {filtered.map((v) => (
-      <div
-        key={v.voter_id}
-        className="break-inside-avoid border p-3 mb-4 rounded-lg text-sm"
+      <button
+        onClick={() => window.print()}
+        className="px-3 py-2 bg-green-600 text-white rounded"
       >
-        <p><b>नाव:</b> {v.name_marathi}</p>
-        <p><b>घर क्रमांक:</b> {v.house_no}</p>
-        <p><b>नाते:</b> {v.relation_type}</p>
-        <p><b>नाव (नाते):</b> {v.relation_name_marathi}</p>
-        <p><b>वय:</b> {v.age}</p>
-        <p><b>लिंग:</b> {v.gender}</p>
-        <p><b>EPIC:</b> {v.voter_id}</p>
-        <p><b>अनुक्रमांक:</b> {v.serial_no}</p>
-      </div>
+        Print
+      </button>
+    </div>
+  )}
+
+  {/* WEB VIEW CARDS */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 no-print">
+    {filtered.map((v) => (
+      <motion.div
+        key={v.voter_id}
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25 }}
+        onClick={() => setSelected(v)}
+        className={`p-4 rounded-xl shadow cursor-pointer ${
+          darkMode ? "bg-gray-800" : "bg-white"
+        }`}
+      >
+        <div className="text-lg font-semibold">{v.name_marathi}</div>
+        <div className="text-sm text-gray-500">
+          घर क्रमांक: {v.house_no} • वय: {v.age}
+        </div>
+        <div className="text-xs text-gray-400 mt-2">
+          EPIC: {v.voter_id} • अनुक्रमांक: {v.serial_no}
+        </div>
+      </motion.div>
     ))}
   </div>
-</div>
+
+  {/* PRINT-ONLY SECTION */}
+  <div id="print-area" className="print-only hidden px-6">
+    <h2 className="text-xl font-semibold mb-4">
+      Printed Voter List ({filtered.length})
+    </h2>
+
+    <div className="columns-2 gap-6">
+      {filtered.map((v) => (
+        <div
+          key={v.voter_id}
+          className="break-inside-avoid border p-3 mb-4 rounded-lg text-sm"
+        >
+          <p><b>नाव:</b> {v.name_marathi}</p>
+          <p><b>घर क्रमांक:</b> {v.house_no}</p>
+          <p><b>नाते:</b> {v.relation_type}</p>
+          <p><b>नाव (नाते):</b> {v.relation_name_marathi}</p>
+          <p><b>वय:</b> {v.age}</p>
+          <p><b>लिंग:</b> {v.gender}</p>
+          <p><b>EPIC:</b> {v.voter_id}</p>
+          <p><b>अनुक्रमांक:</b> {v.serial_no}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>  {/* <-- THIS WAS MISSING! FIXED NOW */}
 
 
-        {/* ---------------------- INSIGHTS IMAGE ---------------------- */}
-        <section className="mt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="rounded-xl shadow-xl overflow-hidden"
-          >
-            <div className="p-6 glass-card">
-              <h3 className="text-xl font-semibold text-center mb-4">Insights</h3>
-              <img src={INSIGHTS_IMG} className="w-full rounded-xl object-contain" />
-            </div>
-          </motion.div>
-        </section>
+{/* ---------------------- INSIGHTS IMAGE ---------------------- */}
+<section className="mt-20">
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    className="rounded-xl shadow-xl overflow-hidden"
+  >
+    <div className="p-6 glass-card">
+      <h3 className="text-xl font-semibold text-center mb-4">Insights</h3>
+      <img src={INSIGHTS_IMG} className="w-full rounded-xl object-contain" />
+    </div>
+  </motion.div>
+</section>
 
-        <Footer />
-      </main>
+<Footer />
+</main>
 
       {/* MODAL */}
       <Modal
