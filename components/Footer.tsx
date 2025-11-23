@@ -34,12 +34,12 @@ export default function Footer() {
       <p className="text-sm text-gray-500 mt-1">
         Developed by{" "}
         <a
-          href="https://fathersmedia.in"
-          target="_blank"
-          className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-transparent bg-clip-text font-semibold hover:opacity-80"
-        >
-          Father’s Media
-        </a>
+  href="https://fathersmedia.in"
+  target="_blank"
+  className="underline text-green-700"
+>
+  Father’s Media
+</a>
       </p>
     </footer>
   );
