@@ -72,10 +72,14 @@ export default function Page() {
   const HERO_IMG = "/IMG-20251123-WA0004.jpg";
   const BANNER_IMG = "/banner.jpg";
   const INSIGHTS_IMG = "/PHOTO-2025-11-22-19-17-37.jpg";
-  const SNAPSHOT_IMG = "/snapshot-ward16.png";  
+  const SNAPSHOT_IMG = "/snapshot-ward16.png";
 
   return (
-    <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"} min-h-screen`}>
+    <div
+      className={`min-h-screen transition-all ${
+        darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"
+      }`}
+    >
       <Navbar />
 
       {/* ======================= HERO ======================= */}
@@ -95,14 +99,16 @@ export default function Page() {
 
             <div
               className={`inline-block text-sm font-semibold px-4 py-1 rounded-md mb-3
-             ${darkMode ? "bg-white/20 text-white" : "bg-white/70 text-gray-700"}
-             `}
+              ${darkMode ? "bg-white/20 text-white" : "bg-white/70 text-gray-700"}
+              `}
             >
               भारतीय राष्ट्रीय काँग्रेस (महाविकास आघाडी)
             </div>
 
-            <h1 className={`text-3xl md:text-5xl font-extrabold leading-tight drop-shadow-xl
-              ${darkMode ? "text-white" : "text-black"}`}
+            <h1
+              className={`text-3xl md:text-5xl font-extrabold leading-tight drop-shadow-xl ${
+                darkMode ? "text-white" : "text-black"
+              }`}
             >
               चंदन बस्वराज पाटील (नागराळकर)
             </h1>
@@ -117,8 +123,7 @@ export default function Page() {
                 onClick={() =>
                   document.getElementById("search")?.scrollIntoView({ behavior: "smooth" })
                 }
-                className={`px-6 py-3 rounded-full font-semibold shadow-lg hover:scale-105 transition
-                ${darkMode ? "bg-white text-gray-900" : "bg-white text-gray-900"}`}
+                className="px-6 py-3 rounded-full bg-white text-gray-900 font-semibold shadow-lg hover:scale-105 transition"
               >
                 शोधा (Search)
               </button>
@@ -148,26 +153,16 @@ export default function Page() {
         </div>
       </header>
 
-      {/* ======================= BANNER ======================= */}
-      <div className="max-w-5xl mx-auto px-4 mt-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="rounded-xl overflow-hidden shadow-xl"
-        >
-          <img src={BANNER_IMG} className="w-full object-cover" />
-        </motion.div>
-      </div>
-
-      {/* ======================= MAIN CONTENT ======================= */}
+      {/* ======================= SEARCH BOX ======================= */}
       <main className="max-w-6xl mx-auto px-4">
-
-        {/* ---------------------- SEARCH ---------------------- */}
         <div id="search" className="sticky top-6 z-40 mt-10">
           <div
-            className={`backdrop-blur-md p-4 rounded-2xl shadow-lg transition
-            ${darkMode ? "bg-black/40" : "bg-white/80"}`}
+            className={`backdrop-blur-xl p-4 rounded-2xl shadow-lg border transition-all
+            ${
+              darkMode
+                ? "bg-gray-800/60 border-gray-700"
+                : "bg-white/70 border-gray-200"
+            }`}
           >
             <div className="flex flex-col md:flex-row gap-3 items-stretch">
 
@@ -175,7 +170,7 @@ export default function Page() {
                 className={`flex-1 p-3 rounded-xl outline-none focus:ring-2 transition
                 ${
                   darkMode
-                    ? "bg-gray-800 text-white focus:ring-blue-400"
+                    ? "bg-gray-900 text-white focus:ring-blue-500"
                     : "bg-white text-gray-800 focus:ring-blue-500"
                 }`}
                 placeholder="Search नाव / आडनाव / EPIC…"
@@ -197,14 +192,18 @@ export default function Page() {
                     setQuery("");
                     setFiltered([]);
                   }}
-                  className="px-4 py-3 rounded-xl bg-gray-200 dark:bg-gray-700"
+                  className={`px-4 py-3 rounded-xl ${
+                    darkMode ? "bg-gray-700" : "bg-gray-200"
+                  }`}
                 >
                   Clear
                 </button>
 
                 <button
                   onClick={() => setDarkMode(!darkMode)}
-                  className="px-3 py-3 rounded-xl bg-gray-100 dark:bg-gray-700"
+                  className={`px-4 py-3 rounded-xl ${
+                    darkMode ? "bg-gray-700" : "bg-gray-100"
+                  }`}
                 >
                   {darkMode ? "Light" : "Dark"}
                 </button>
@@ -213,18 +212,17 @@ export default function Page() {
           </div>
         </div>
 
-        {/* ---------------------- DASHBOARD TILES ---------------------- */}
+        {/* ======================= QUICK ACTIONS ======================= */}
         <section className="mt-10">
           <h2 className="text-xl font-semibold mb-3">Quick Actions</h2>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-
             {/* Alphabetical */}
             <a
               href="/alphabetical"
-              className="group bg-white dark:bg-gray-800 rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col gap-3"
+              className="group glass-card"
             >
-              <div className="p-2 bg-orange-50 group-hover:bg-orange-100 rounded-md">
+              <div className="icon-box bg-orange-50">
                 <LucideList size={22} className="text-orange-600" />
               </div>
               <div className="font-semibold">Alphabetical</div>
@@ -232,11 +230,8 @@ export default function Page() {
             </a>
 
             {/* Gallery */}
-            <a
-              href="/gallery"
-              className="group bg-white dark:bg-gray-800 rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col gap-3"
-            >
-              <div className="p-2 bg-indigo-50 group-hover:bg-indigo-100 rounded-md">
+            <a href="/gallery" className="group glass-card">
+              <div className="icon-box bg-indigo-50">
                 <LucideImage size={22} className="text-indigo-600" />
               </div>
               <div className="font-semibold">Gallery</div>
@@ -244,11 +239,8 @@ export default function Page() {
             </a>
 
             {/* Work */}
-            <a
-              href="/work"
-              className="group bg-white dark:bg-gray-800 rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col gap-3"
-            >
-              <div className="p-2 bg-emerald-50 group-hover:bg-emerald-100 rounded-md">
+            <a href="/work" className="group glass-card">
+              <div className="icon-box bg-emerald-50">
                 <LucideBriefcase size={22} className="text-emerald-600" />
               </div>
               <div className="font-semibold">Work</div>
@@ -256,28 +248,24 @@ export default function Page() {
             </a>
 
             {/* Contact */}
-            <a
-              href="/contact"
-              className="group bg-white dark:bg-gray-800 rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col gap-3"
-            >
-              <div className="p-2 bg-sky-50 group-hover:bg-sky-100 rounded-md">
+            <a href="/contact" className="group glass-card">
+              <div className="icon-box bg-sky-50">
                 <LucidePhone size={22} className="text-sky-600" />
               </div>
               <div className="font-semibold">Contact</div>
               <div className="text-xs text-gray-500">Get in touch</div>
             </a>
-
           </div>
         </section>
 
-        {/* ---------------------- WARD 16 OVERVIEW ---------------------- */}
+        {/* ======================= WARD SNAPSHOT ======================= */}
         <section className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
 
           {/* Snapshot Image */}
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="col-span-1 md:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-xl shadow"
+            className="col-span-1 md:col-span-2 glass-card p-4"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -297,10 +285,10 @@ export default function Page() {
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow flex flex-col gap-3"
+            className="glass-card p-4 flex flex-col gap-3"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-yellow-50 rounded-md">
+              <div className="icon-box bg-yellow-50">
                 <LucideBar size={20} className="text-yellow-600" />
               </div>
               <div>
@@ -330,7 +318,7 @@ export default function Page() {
           </motion.div>
         </section>
 
-        {/* ---------------------- SEARCH RESULTS ---------------------- */}
+        {/* ======================= SEARCH RESULTS ======================= */}
         <section id="results" className="mt-10">
           {filtered.length > 0 && (
             <div className="mb-4 flex items-center justify-between">
@@ -378,7 +366,7 @@ export default function Page() {
             whileInView={{ opacity: 1, y: 0 }}
             className="rounded-xl shadow-xl overflow-hidden"
           >
-            <div className="p-6 bg-white dark:bg-gray-800">
+            <div className="p-6 glass-card">
               <h3 className="text-xl font-semibold text-center mb-4">Insights</h3>
               <img src={INSIGHTS_IMG} className="w-full rounded-xl object-contain" />
             </div>
@@ -388,7 +376,7 @@ export default function Page() {
         <Footer />
       </main>
 
-      {/* ---------------------- MODAL ---------------------- */}
+      {/* MODAL */}
       <Modal
         isOpen={!!selected}
         onClose={() => setSelected(null)}
@@ -398,3 +386,12 @@ export default function Page() {
     </div>
   );
 }
+
+/** Glass Card Utility Classes */
+const glassCard = `
+  bg-white/20 dark:bg-white/10
+  backdrop-blur-xl
+  border border-white/20 dark:border-white/10
+  rounded-xl shadow-lg
+`;
+
