@@ -71,17 +71,13 @@ export default function Page() {
     <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-50"} min-h-screen`}>
       <Navbar />
 
-{/* ========== HERO FIXED ========== */}
-<div className="relative w-full overflow-hidden pb-10">
 
-  {/* Blurred background */}
-  <img
-    src={HERO_IMG}
-    className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-60"
-  />
+{/* ========== HERO UPDATED (OPTION C — TRICOLOR GRADIENT) ========== */}
+<div className="relative w-full overflow-hidden pb-10 
+    bg-gradient-to-br from-orange-500 via-white to-green-600">
 
-  {/* Overlay */}
-  <div className="absolute inset-0 bg-black/20" />
+  {/* Soft overlay for readability */}
+  <div className="absolute inset-0 bg-white/20"></div>
 
   {/* CONTENT */}
   <div className="relative max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center gap-10">
@@ -119,8 +115,6 @@ export default function Page() {
     </div>
   </div>
 </div>
-
-
 
       {/* BANNER - separated cleanly, no negative margin */}
       <div className="max-w-5xl mx-auto px-4 md:px-6 mt-10">
