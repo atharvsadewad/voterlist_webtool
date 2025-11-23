@@ -194,21 +194,25 @@ export default function Page() {
     </AnimatePresence>
   </div>
 
-  {/* PRINT-ONLY 2 COLUMN DETAILS */}
-  <div id="print-area" className="print-only" style={{ display: "none" }}>
-    {filtered.map((v) => (
-      <div key={v.voter_id} className="print-block text-sm leading-5 border-b pb-2 mb-3">
-        <p><b>नाव:</b> {v.name_marathi}</p>
-        <p><b>घर क्रमांक:</b> {v.house_no}</p>
-        <p><b>नाते:</b> {v.relation_type}</p>
-        <p><b>नाव (नाते):</b> {v.relation_name_marathi}</p>
-        <p><b>वय:</b> {v.age}</p>
-        <p><b>लिंग:</b> {v.gender}</p>
-        <p><b>EPIC:</b> {v.voter_id}</p>
-        <p><b>अनुक्रमांक:</b> {v.serial_no}</p>
-      </div>
-    ))}
-  </div>
+
+{/* PRINT-ONLY 2 COLUMN DETAILS */}
+<div id="print-area" className="print-only" style={{ display: "none" }}>
+  {filtered.map((v) => (
+    <div
+      key={v.voter_id}
+      className="print-card"
+    >
+      <p><b>नाव:</b> {v.name_marathi}</p>
+      <p><b>घर क्रमांक:</b> {v.house_no}</p>
+      <p><b>नाते:</b> {v.relation_type}</p>
+      <p><b>नाव (नाते):</b> {v.relation_name_marathi}</p>
+      <p><b>वय:</b> {v.age}</p>
+      <p><b>लिंग:</b> {v.gender}</p>
+      <p><b>EPIC:</b> {v.voter_id}</p>
+      <p><b>अनुक्रमांक:</b> {v.serial_no}</p>
+    </div>
+  ))}
+</div>
 </section>
 
         {/* INSIGHTS LAST */}
