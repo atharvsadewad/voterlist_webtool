@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "../../components/Navbar";
+import Modal from "../../components/Modal";
 
-// Marathi alphabetical order
+// Standard Marathi alphabet
 const LETTERS = [
   "अ","आ","इ","ई","उ","ऊ","ए","ऐ","ओ","औ","अं","अः",
   "क","ख","ग","घ","ङ",
@@ -21,8 +23,8 @@ export default function AlphabeticalPage() {
   const [selectedLetter, setSelectedLetter] = useState("अ");
   const [query, setQuery] = useState("");
   const [showAll, setShowAll] = useState(false);
+  const [modalVoter, setModalVoter] = useState<any | null>(null);
 
-  // Proper Marathi sorting
   const collator = useMemo(() => new Intl.Collator("mr"), []);
 
   useEffect(() => {
@@ -31,18 +33,16 @@ export default function AlphabeticalPage() {
       .then((data) => setVoters(data));
   }, []);
 
-  // ==================== FILTER LOGIC ====================
+  // FILTER + SORT LOGIC
   const filtered = useMemo(() => {
     let list = voters;
 
-    // Show A→ज्ञ entire list
     if (!showAll) {
       list = list.filter((v) =>
         (v.name_marathi || "").trim().startsWith(selectedLetter)
       );
     }
 
-    // Search inside list
     if (query.trim()) {
       const q = query.toLowerCase();
       list = list.filter((v) =>
@@ -50,92 +50,123 @@ export default function AlphabeticalPage() {
       );
     }
 
-    // Sort alphabetically
     return [...list].sort((a, b) =>
-      collator.compare(a.name_marathi || "", b.name_marathi || "")
+      collator.compare(a.name_marathi, b.name_marathi)
     );
-  }, [voters, selectedLetter, showAll, query, collator]);
+  }, [voters, selectedLetter, query, showAll, collator]);
 
   return (
-    <div className="min-h-screen max-w-5xl mx-auto px-4 py-8">
+    <div className="min-h-screen">
 
-      {/* TITLE */}
-      <h1 className="text-3xl font-bold text-center mb-6">
-        Marathi Alphabetical Voter List
-      </h1>
+      {/* NAVBAR */}
+      <Navbar />
 
-      {/* LETTER BUTTONS */}
-      <div className="flex flex-wrap gap-2 justify-center mb-6">
-        {LETTERS.map((l) => (
+      <div className="max-w-5xl mx-auto px-4 py-8">
+
+        {/* PAGE TITLE */}
+        <h1 className="text-3xl font-bold text-center mb-6">
+          Marathi Alphabetical Voter List
+        </h1>
+
+        {/* LETTER BUTTONS */}
+        <div className="flex flex-wrap gap-2 justify-center mb-6">
+          {LETTERS.map((l) => (
+            <button
+              key={l}
+              onClick={() => {
+                setSelectedLetter(l);
+                setShowAll(false);
+                setQuery("");
+              }}
+              className={`px-3 py-1 rounded-md text-sm font-semibold border ${
+                selectedLetter === l && !showAll
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700"
+              }`}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
+
+        {/* SHOW FULL LIST BUTTON */}
+        <div className="text-center mb-8">
           <button
-            key={l}
             onClick={() => {
-              setSelectedLetter(l);
-              setShowAll(false);
+              setShowAll(true);
               setQuery("");
             }}
-            className={`px-3 py-1 rounded-md text-sm font-semibold border ${
-              selectedLetter === l && !showAll
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700"
-            }`}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
           >
-            {l}
+            Show Full Alphabetical List
           </button>
-        ))}
-      </div>
+        </div>
 
-      {/* SHOW FULL LIST */}
-      <div className="text-center mb-8">
-        <button
-          onClick={() => {
-            setShowAll(true);
-            setQuery("");
-          }}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
+        {/* SEARCH BOX */}
+        <div className="mb-6 max-w-md mx-auto">
+          <input
+            type="text"
+            placeholder={
+              showAll ? "Search full list…" : `Search in "${selectedLetter}"…`
+            }
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full p-3 border rounded-lg"
+          />
+        </div>
+
+        {/* PRINT BUTTON */}
+        {filtered.length > 0 && (
+          <div className="text-right mb-4 print:hidden">
+            <button
+              onClick={() => window.print()}
+              className="px-4 py-2 bg-orange-600 text-white rounded-lg shadow hover:bg-orange-700"
+            >
+              Print List
+            </button>
+          </div>
+        )}
+
+        {/* RESULT COUNT */}
+        <div className="text-gray-600 text-sm mb-3">
+          Showing <b>{filtered.length}</b> results{" "}
+          {showAll ? "(A → ज्ञ)" : `starting with "${selectedLetter}"`}
+        </div>
+
+        {/* RESULTS GRID */}
+        <div
+          id="alphabet-grid"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-10 print:grid print:grid-cols-3"
         >
-          Show Full Alphabetical List (A → ज्ञ)
-        </button>
+          {filtered.map((voter) => (
+            <motion.div
+              key={voter.voter_id}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setModalVoter(voter)}
+              className="p-4 rounded-xl shadow bg-white cursor-pointer print:border print:shadow-none print:p-2"
+            >
+              <div className="font-semibold text-lg">{voter.name_marathi}</div>
+              <div className="text-sm text-gray-500">
+                घर क्रमांक: {voter.house_no} • वय: {voter.age}
+              </div>
+              <div className="text-xs text-gray-400 mt-2">
+                EPIC: {voter.voter_id} • अनुक्रमांक: {voter.serial_no}
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
-      {/* SEARCH */}
-      <div className="mb-6 max-w-md mx-auto">
-        <input
-          type="text"
-          placeholder={showAll ? "Search full list…" : `Search in "${selectedLetter}"…`}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-full p-3 border rounded-lg"
-        />
-      </div>
-
-      {/* COUNT */}
-      <div className="text-gray-600 text-sm mb-3">
-        Showing <b>{filtered.length}</b> voters
-        {showAll ? "" : ` starting with "${selectedLetter}"`}
-      </div>
-
-      {/* RESULTS GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-10">
-        {filtered.map((voter) => (
-          <motion.div
-            key={voter.voter_id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.3 }}
-            className="p-4 rounded-xl shadow bg-white cursor-pointer"
-          >
-            <div className="font-semibold text-lg">{voter.name_marathi}</div>
-            <div className="text-sm text-gray-500">
-              घर क्रमांक: {voter.house_no} • वय: {voter.age}
-            </div>
-            <div className="text-xs text-gray-400 mt-2">
-              EPIC: {voter.voter_id} • अनुक्रमांक: {voter.serial_no}
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      {/* MODAL */}
+      <Modal
+        isOpen={!!modalVoter}
+        onClose={() => setModalVoter(null)}
+        voter={modalVoter}
+        darkMode={false}
+      />
     </div>
   );
 }
