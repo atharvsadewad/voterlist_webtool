@@ -69,7 +69,7 @@ export default function AlphabeticalPage() {
         </h1>
 
         {/* LETTER BUTTONS */}
-        <div className="flex flex-wrap gap-2 justify-center mb-6">
+        <div className="flex flex-wrap gap-2 justify-center mb-6 print:hidden">
           {LETTERS.map((l) => (
             <button
               key={l}
@@ -90,7 +90,7 @@ export default function AlphabeticalPage() {
         </div>
 
         {/* SHOW FULL LIST BUTTON */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 print:hidden">
           <button
             onClick={() => {
               setShowAll(true);
@@ -103,7 +103,7 @@ export default function AlphabeticalPage() {
         </div>
 
         {/* SEARCH BOX */}
-        <div className="mb-6 max-w-md mx-auto">
+        <div className="mb-6 max-w-md mx-auto print:hidden">
           <input
             type="text"
             placeholder={
@@ -128,15 +128,18 @@ export default function AlphabeticalPage() {
         )}
 
         {/* RESULT COUNT */}
-        <div className="text-gray-600 text-sm mb-3">
+        <div className="text-gray-600 text-sm mb-3 print:hidden">
           Showing <b>{filtered.length}</b> results{" "}
           {showAll ? "(A → ज्ञ)" : `starting with "${selectedLetter}"`}
         </div>
 
-        {/* RESULTS GRID */}
+        {/* RESULTS GRID — PRINTABLE AREA */}
         <div
-          id="alphabet-grid"
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-10 print:grid print:grid-cols-3"
+          id="print-area"
+          className="
+            grid grid-cols-1 sm:grid-cols-2 gap-4 pb-10
+            print:grid print:grid-cols-3 print:gap-2
+          "
         >
           {filtered.map((voter) => (
             <motion.div
@@ -146,7 +149,10 @@ export default function AlphabeticalPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.3 }}
               onClick={() => setModalVoter(voter)}
-              className="p-4 rounded-xl shadow bg-white cursor-pointer print:border print:shadow-none print:p-2"
+              className="
+                p-4 rounded-xl shadow bg-white cursor-pointer
+                print:border print:shadow-none print:p-2
+              "
             >
               <div className="font-semibold text-lg">{voter.name_marathi}</div>
               <div className="text-sm text-gray-500">
