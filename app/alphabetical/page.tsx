@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import Navbar from "../../components/Navbar";
 import Modal from "../../components/Modal";
 
-// Marathi alphabet buttons (official order you had)
+// Marathi Letters
 const LETTERS = [
   "अ","आ","इ","ई","उ","ऊ","ए","ऐ","ओ","औ","अं","अः",
   "क","ख","ग","घ","ङ",
@@ -25,11 +25,7 @@ export default function AlphabeticalPage() {
   const [showAll, setShowAll] = useState(false);
   const [modalVoter, setModalVoter] = useState<any | null>(null);
 
-  // collator for Marathi alphabetical sorting
   const collator = useMemo(() => new Intl.Collator("mr"), []);
-
-  // ref to print grid content
-  const printGridRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     fetch("/voters.json?t=" + Date.now())
@@ -55,130 +51,51 @@ export default function AlphabeticalPage() {
       );
     }
 
-    // stable sort using Marathi collator
     return [...list].sort((a, b) =>
       collator.compare(a.name_marathi || "", b.name_marathi || "")
     );
   }, [voters, selectedLetter, query, showAll, collator]);
 
-  // print helper: open new window with only printable markup (avoids blank pages)
+  // PRINT (same logic as home page)
   const handlePrint = () => {
-    const el = printGridRef.current;
-    if (!el) {
-      window.print(); // fallback
-      return;
-    }
+    const printArea = document.getElementById("print-area");
+    if (!printArea) return;
 
-    // Grab markup and inline minimal print styles so it prints consistently
-    const printHTML = `
-      <!doctype html>
-      <html>
-        <head>
-          <meta charset="utf-8" />
-          <title>Print - Voter List</title>
-          <style>
-            /* Page reset */
-            html,body{margin:0;padding:12px;font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
-            /* Grid: 3 columns for print */
-            .print-grid {
-              display: grid;
-              grid-template-columns: repeat(3, 1fr);
-              gap: 10px;
-            }
-            /* Card style like on-site */
-            .print-card {
-              border: 1px solid #e5e7eb;
-              border-radius: 10px;
-              padding: 10px;
-              box-shadow: none;
-              background: #fff;
-              font-size: 12px;
-              line-height: 1.15;
-              min-height: 70px;
-            }
-            .print-card .name { font-weight: 700; font-size: 13px; margin-bottom:6px; }
-            .meta { color: #4b5563; font-size: 11px; }
-            /* Make sure no nav/controls printed */
-            @media print {
-              body { margin:0; }
-            }
-            /* Scale down on narrower paper */
-            @media (max-width:900px) {
-              .print-grid { grid-template-columns: repeat(2, 1fr); }
-            }
-            @media (max-width:600px) {
-              .print-grid { grid-template-columns: repeat(1, 1fr); }
-            }
-          </style>
-        </head>
-        <body>
-          <h2 style="margin:0 0 12px 0;font-size:16px;">Voter list — ${showAll ? "Full" : `Starting with: ${selectedLetter}`}</h2>
-          <div class="print-grid">
-            ${el.innerHTML}
+    // Build full card HTML for print
+    printArea.innerHTML = filtered
+      .map((v) => {
+        const name = v.name_marathi || "";
+        const house = v.house_no || "NA";
+        const age = v.age || "NA";
+        const relationType = v.relation_type || "";
+        const relationName = v.relation_name_marathi || "";
+        const epic = v.voter_id || "";
+        const serial = v.serial_no || "";
+
+        return `
+          <div class="print-card">
+            <div class="name" style="font-weight:700;font-size:14px;margin-bottom:6px;">${name}</div>
+            <div class="meta">घर क्रमांक: ${house} • वय: ${age}</div>
+            <div class="meta">नाते: ${relationType} ${relationName ? `- ${relationName}` : ""}</div>
+            <div class="meta" style="margin-top:6px;">EPIC: ${epic} • अनुक्रमांक: ${serial}</div>
           </div>
-        </body>
-      </html>
-    `;
+        `;
+      })
+      .join("");
 
-    const w = window.open("", "_blank", "noopener,noreferrer");
-    if (!w) {
-      alert("Unable to open print window. Please allow popups.");
-      return;
-    }
-    w.document.open();
-    w.document.write(printHTML);
-    w.document.close();
-
-    // wait a tick for layout to settle, then print
-    w.focus();
-    setTimeout(() => {
-      w.print();
-      // do not auto-close — let user save/cancel. close would sometimes cancel print on some browsers.
-      // w.close();
-    }, 350);
+    window.print();
   };
-
-  // Render small card markup for print cloning (keeps same markup as on-screen)
-  const renderCardInner = (voter: any) => {
-    // safe fields fallback
-    const name = voter.name_marathi || voter.fullname || "";
-    const house = voter.house_no || voter.house || "NA";
-    const age = voter.age || "NA";
-    const relationType = voter.relation_type || voter.relation || "";
-    const relationName = voter.relation_name_marathi || voter.relation_name || "";
-    const epic = voter.voter_id || voter.epic || "";
-    const serial = voter.serial_no || voter.serial || "";
-
-    // HTML snippet used for print window (must be plain HTML)
-    return `
-      <div class="print-card">
-        <div class="name">${escapeHtml(name)}</div>
-        <div class="meta">घर क्रमांक: ${escapeHtml(String(house))} • वय: ${escapeHtml(String(age))}</div>
-        <div class="meta">नाते: ${escapeHtml(relationType)} ${relationName ? " - " + escapeHtml(relationName) : ""}</div>
-        <div class="meta" style="margin-top:6px;color:#6b7280;">EPIC: ${escapeHtml(epic)} • अनुक्रमांक: ${escapeHtml(String(serial))}</div>
-      </div>
-    `;
-  };
-
-  // helper to escape HTML for print HTML injection
-  function escapeHtml(str: string) {
-    return str
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Page-specific navbar */}
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-center mb-6">Marathi Alphabetical Voter List</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">
+          Marathi Alphabetical Voter List
+        </h1>
 
-        {/* letters */}
+        {/* Letters */}
         <div className="flex flex-wrap gap-2 justify-center mb-6">
           {LETTERS.map((l) => (
             <button
@@ -189,7 +106,9 @@ export default function AlphabeticalPage() {
                 setQuery("");
               }}
               className={`px-3 py-1 rounded-md text-sm font-semibold border ${
-                selectedLetter === l && !showAll ? "bg-blue-600 text-white" : "bg-white text-gray-700"
+                selectedLetter === l && !showAll
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700"
               }`}
             >
               {l}
@@ -197,6 +116,7 @@ export default function AlphabeticalPage() {
           ))}
         </div>
 
+        {/* Full list button */}
         <div className="text-center mb-6">
           <button
             onClick={() => {
@@ -209,6 +129,7 @@ export default function AlphabeticalPage() {
           </button>
         </div>
 
+        {/* Search */}
         <div className="mb-6 max-w-md mx-auto">
           <input
             type="text"
@@ -219,7 +140,7 @@ export default function AlphabeticalPage() {
           />
         </div>
 
-        {/* print button */}
+        {/* Print button */}
         {filtered.length > 0 && (
           <div className="text-right mb-4 print:hidden">
             <button
@@ -232,42 +153,37 @@ export default function AlphabeticalPage() {
         )}
 
         <div className="text-gray-600 text-sm mb-3">
-          Showing <b>{filtered.length}</b> results {showAll ? "(A → ज्ञ)" : `starting with "${selectedLetter}"`}
+          Showing <b>{filtered.length}</b> results{" "}
+          {showAll ? "(A → ज्ञ)" : `starting with "${selectedLetter}"`}
         </div>
 
-        {/* On-screen results grid */}
+        {/* On-screen result cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-10">
-          {filtered.map((voter) => (
+          {filtered.map((v) => (
             <motion.div
-              key={(voter.voter_id || voter.epic || Math.random()) + "-" + (voter.serial_no || "")}
-              initial={{ opacity: 0, y: 12 }}
+              key={v.voter_id + "-" + v.serial_no}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.25 }}
-              onClick={() => setModalVoter(voter)}
+              onClick={() => setModalVoter(v)}
               className="p-4 rounded-xl shadow bg-white cursor-pointer"
             >
-              <div className="font-semibold text-lg">{voter.name_marathi || voter.fullname}</div>
-              <div className="text-sm text-gray-500">घर क्रमांक: {voter.house_no || voter.house} • वय: {voter.age || "NA"}</div>
-              <div className="text-xs text-gray-400 mt-2">EPIC: {voter.voter_id || voter.epic} • अनुक्रमांक: {voter.serial_no || voter.serial}</div>
+              <div className="font-semibold text-lg">{v.name_marathi}</div>
+              <div className="text-sm text-gray-500">
+                घर क्रमांक: {v.house_no} • वय: {v.age}
+              </div>
+              <div className="text-xs text-gray-400 mt-2">
+                EPIC: {v.voter_id} • अनुक्रमांक: {v.serial_no}
+              </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Hidden print grid container (we clone the innerHTML when printing) */}
-        <div style={{display:"none"}}>
-          <div
-            id="print-grid-clone"
-            ref={printGridRef}
-            // populate innerHTML programmatically to avoid React escaping difficulties
-            dangerouslySetInnerHTML={{
-              __html: filtered.map((v) => renderCardInner(v)).join("")
-            }}
-          />
-        </div>
+        {/* HIDDEN PRINT AREA (your CSS controls it) */}
+        <div id="print-area" className="print-only"></div>
       </div>
 
-      {/* Modal (share/close) */}
       <Modal
         isOpen={!!modalVoter}
         onClose={() => setModalVoter(null)}
