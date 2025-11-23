@@ -19,7 +19,13 @@ export default function Navbar() {
             alt="INC"
             className="rounded-full border shadow-sm"
           />
-          <span className="hidden md:block font-semibold text-gray-800 text-lg">
+
+          {/* MOBILE = "INC", DESKTOP = full text */}
+          <span className="font-semibold text-gray-800 text-lg md:hidden">
+            INC
+          </span>
+
+          <span className="hidden md:block font-semibold text-gray-800 text-lg whitespace-nowrap">
             Indian National Congress, Udgir
           </span>
         </div>
