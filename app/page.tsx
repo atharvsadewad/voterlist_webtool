@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Modal from "../components/Modal";
 import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 
 interface Voter {
   serial_no: number;
