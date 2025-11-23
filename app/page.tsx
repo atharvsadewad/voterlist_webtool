@@ -159,40 +159,57 @@ export default function Page() {
           </div>
         </div>
 
-        {/* RESULTS */}
-        <section id="results" className="mt-12">
-          {filtered.length > 0 && (
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-sm text-gray-500">
-                Results: <b>{filtered.length}</b>
-              </span>
+{/* ========================= RESULTS ========================= */}
+<section id="results" className="mt-12">
+  {filtered.length > 0 && (
+    <div className="mb-4 flex items-center justify-between no-print">
+      <span className="text-sm text-gray-500">
+        Results: <b>{filtered.length}</b>
+      </span>
 
-              <button onClick={() => window.print()} className="px-3 py-2 bg-green-600 text-white rounded print:hidden">
-                Print
-              </button>
-            </div>
-          )}
+      <button onClick={() => window.print()} className="px-3 py-2 bg-green-600 text-white rounded">
+        Print
+      </button>
+    </div>
+  )}
 
-          <div id="print-area" className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <AnimatePresence>
-              {filtered.map((v) => (
-                <motion.div
-                  key={v.voter_id}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3 }}
-                  className={`p-4 rounded-xl shadow cursor-pointer ${darkMode ? "bg-gray-800" : "bg-white"}`}
-                  onClick={() => setSelected(v)}
-                >
-                  <div className="text-lg font-semibold">{v.name_marathi}</div>
-                  <div className="text-sm text-gray-500">घर क्रमांक: {v.house_no} • वय: {v.age}</div>
-                  <div className="text-xs text-gray-400 mt-2">EPIC: {v.voter_id} • अनुक्रमांक: {v.serial_no}</div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </section>
+  {/* Visible grid for website */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 no-print">
+    <AnimatePresence>
+      {filtered.map((v) => (
+        <motion.div
+          key={v.voter_id}
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className={`p-4 rounded-xl shadow cursor-pointer ${darkMode ? "bg-gray-800" : "bg-white"}`}
+          onClick={() => setSelected(v)}
+        >
+          <div className="text-lg font-semibold">{v.name_marathi}</div>
+          <div className="text-sm text-gray-500">घर क्रमांक: {v.house_no} • वय: {v.age}</div>
+          <div className="text-xs text-gray-400 mt-2">EPIC: {v.voter_id} • अनुक्रमांक: {v.serial_no}</div>
+        </motion.div>
+      ))}
+    </AnimatePresence>
+  </div>
+
+  {/* PRINT-ONLY 2 COLUMN DETAILS */}
+  <div id="print-area" className="print-only" style={{ display: "none" }}>
+    {filtered.map((v) => (
+      <div key={v.voter_id} className="print-block text-sm leading-5 border-b pb-2 mb-3">
+        <p><b>नाव:</b> {v.name_marathi}</p>
+        <p><b>घर क्रमांक:</b> {v.house_no}</p>
+        <p><b>नाते:</b> {v.relation_type}</p>
+        <p><b>नाव (नाते):</b> {v.relation_name_marathi}</p>
+        <p><b>वय:</b> {v.age}</p>
+        <p><b>लिंग:</b> {v.gender}</p>
+        <p><b>EPIC:</b> {v.voter_id}</p>
+        <p><b>अनुक्रमांक:</b> {v.serial_no}</p>
+      </div>
+    ))}
+  </div>
+</section>
 
         {/* INSIGHTS LAST */}
         <section className="mt-20">
