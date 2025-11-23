@@ -93,7 +93,7 @@ export default function Page() {
       </div>
 
       <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-black drop-shadow-xl">
-        पाटील चंदन बस्वराज (नागराळकर)
+        चंदन बस्वराज पाटील (नागराळकर)
       </h1>
 
       <p className="text-xl md:text-3xl font-semibold text-white mt-2 drop-shadow-lg">
