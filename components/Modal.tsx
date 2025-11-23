@@ -28,7 +28,7 @@ export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) 
 🌟 आमचे अधिकृत उमेदवार:
 *पाटील चंदन बस्वराज (नागराळकर)*
 भारतीय राष्ट्रीय काँग्रेस — उदगीर
-`.trim();
+`.trim();   // <-- 🔥 THIS closes the string safely
 
     if (navigator.share) {
       navigator.share({
@@ -84,3 +84,14 @@ export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) 
 
             {/* CLOSE BUTTON */}
             <button
+              onClick={onClose}
+              className="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+              Close
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
