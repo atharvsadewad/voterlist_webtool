@@ -335,29 +335,31 @@ export default function Page() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filtered.map((v) => (
-              <motion.div
-                key={v.voter_id}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25 }}
-                onClick={() => setSelected(v)}
-                className={`p-4 rounded-xl shadow cursor-pointer ${
-                  darkMode ? "bg-gray-800" : "bg-white"
-                }`}
-              >
-                <div className="text-lg font-semibold">{v.name_marathi}</div>
-                <div className="text-sm text-gray-500">
-                  घर क्रमांक: {v.house_no} • वय: {v.age}
-                </div>
-                <div className="text-xs text-gray-400 mt-2">
-                  EPIC: {v.voter_id} • अनुक्रमांक: {v.serial_no}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
+          {/* PRINT-ONLY SECTION */}
+<div id="print-area" className="hidden print:block px-6">
+  <h2 className="text-xl font-semibold mb-4">
+    Printed Voter List ({filtered.length})
+  </h2>
+
+  <div className="columns-2 gap-6">
+    {filtered.map((v) => (
+      <div
+        key={v.voter_id}
+        className="break-inside-avoid border p-3 mb-4 rounded-lg text-sm"
+      >
+        <p><b>नाव:</b> {v.name_marathi}</p>
+        <p><b>घर क्रमांक:</b> {v.house_no}</p>
+        <p><b>नाते:</b> {v.relation_type}</p>
+        <p><b>नाव (नाते):</b> {v.relation_name_marathi}</p>
+        <p><b>वय:</b> {v.age}</p>
+        <p><b>लिंग:</b> {v.gender}</p>
+        <p><b>EPIC:</b> {v.voter_id}</p>
+        <p><b>अनुक्रमांक:</b> {v.serial_no}</p>
+      </div>
+    ))}
+  </div>
+</div>
+
 
         {/* ---------------------- INSIGHTS IMAGE ---------------------- */}
         <section className="mt-20">
