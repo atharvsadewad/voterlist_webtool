@@ -5,13 +5,7 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* simple theme token — you can expand */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -22,57 +16,66 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
-/* --------------------------------------------------
-   PRINT STYLES — single clean block (NO duplicates)
--------------------------------------------------- */
+/* Small helpers used by page */
+.icon-box { display: inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:8px; }
+.group .icon-box { transition: transform .18s ease; }
+.group:hover .icon-box { transform: translateY(-3px); }
+
+/* PRINT RULES (2-column default) */
 @media print {
+  /* hide everything except our print-area markers */
+  body * { visibility: hidden !important; }
 
-  /* Hide everything */
-  body * {
-    visibility: hidden !important;
-  }
+  /* prefer #print-area, else fallback to #print-inline */
+  #print-area, #print-area * { visibility: visible !important; }
+  #print-inline, #print-inline * { visibility: visible !important; }
 
-  /* Show ONLY print-area */
-  #print-area,
-  #print-area * {
-    visibility: visible !important;
-  }
-
-  #print-area {
+  /* layout for print */
+  #print-area, #print-inline {
     position: absolute;
-    top: 0;
     left: 0;
+    top: 0;
     width: 100%;
-    padding: 20px;
+    padding: 18px;
+    box-sizing: border-box;
+    background: #fff;
+    color: #000;
+  }
 
+  /* two columns per page (good default) */
+  #print-inline > div, #print-area > div {
     column-count: 2;
-    column-gap: 32px;
+    column-gap: 18px;
   }
 
-  /* Prevent card break in between pages */
-  .break-inside-avoid {
-    break-inside: avoid;
-  }
+  /* avoid breaking inside cards */
+  .break-inside-avoid, .print-card { break-inside: avoid; -webkit-column-break-inside: avoid; page-break-inside: avoid; }
 
+  /* simple card style for prints */
   .print-card {
-    border: 1px solid #999;
-    border-radius: 10px;
-    padding: 12px 16px;
-    margin-bottom: 16px;
-    background: white !important;
-    font-size: 13px;
-    line-height: 1.35;
-    box-shadow: 0 0 4px rgba(0,0,0,0.15);
+    border: 1px solid #bbb;
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    background: #fff;
   }
 
-  .print-only {
-    display: block !important;
-  }
-
-  .no-print {
-    display: none !important;
-  }
+  /* ensure images print at full width */
+  img { max-width: 100% !important; height: auto !important; }
 }
+
+/* Small utility visible only on screen (not in print) */
+.print-only { display: none; }
+@media print { .print-only { display: block !important; } }
+
+/* If you want extra "glass-card" look in css, optionally add:
+.glass-card {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+*/
