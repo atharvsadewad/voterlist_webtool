@@ -33,7 +33,7 @@ export default function Page() {
     localStorage.setItem("voter_dark", darkMode ? "1" : "0");
   }, [darkMode]);
 
-  // Load voters
+  // Load voters data
   useEffect(() => {
     fetch(`/voters.json?t=${Date.now()}`)
       .then((r) => r.json())
@@ -43,16 +43,16 @@ export default function Page() {
 
   const handleSearch = () => {
     if (!query.trim()) return setFiltered([]);
-
     const q = query.toLowerCase();
-    const results = voters.filter(
+
+    const res = voters.filter(
       (v) =>
         v.name_marathi.toLowerCase().includes(q) ||
         v.relation_name_marathi.toLowerCase().includes(q) ||
         v.voter_id.toLowerCase().includes(q)
     );
 
-    setFiltered(results);
+    setFiltered(res);
 
     setTimeout(() => {
       document.getElementById("results")?.scrollIntoView({
@@ -62,11 +62,12 @@ export default function Page() {
   };
 
   const HERO_IMG = "/IMG-20251123-WA0004.jpg";
+  const BANNER_IMG = "/banner.jpg";
   const INSIGHTS_IMG = "/PHOTO-2025-11-22-19-17-37.jpg";
 
   return (
-    <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-50"}`}>
-      
+    <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-50"} min-h-screen`}>
+
       {/* ========================= HERO ========================= */}
       <div className="relative w-full h-[480px] md:h-[550px] overflow-hidden">
 
@@ -76,19 +77,19 @@ export default function Page() {
           className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-60"
         />
 
-        {/* Hero content layout */}
+        {/* Layout */}
         <div className="absolute inset-0 flex flex-col md:flex-row items-center justify-between px-6 md:px-16">
-          
-          {/* LEFT TEXT */}
-          <div className="max-w-lg text-left mt-6 md:mt-0">
 
-            <div className="bg-white/70 text-gray-800 text-sm font-semibold px-4 py-1 rounded-md inline-block mb-3">
+          {/* LEFT TEXT */}
+          <div className="max-w-lg mt-6 md:mt-0">
+
+            <div className="bg-white/70 text-gray-700 text-sm font-semibold px-4 py-1 rounded-md inline-block mb-3">
               भारतीय राष्ट्रीय काँग्रेस (महाविकास आघाडी)
             </div>
 
-            <h1 className="text-3xl md:text-5xl font-extrabold leading-tight drop-shadow-xl">
+            <h1 className="text-3xl md:text-5xl font-extrabold leading-tight">
               <span className="bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 bg-clip-text text-transparent">
-                चंदन बसवराज पाटील (नागराळकर)
+                पाटील चंदन बस्वराज (नागराळकर)
               </span>
             </h1>
 
@@ -97,28 +98,45 @@ export default function Page() {
             </p>
 
             <button
-              onClick={() => document.getElementById("search")?.scrollIntoView({ behavior: "smooth" })}
+              onClick={() =>
+                document.getElementById("search")?.scrollIntoView({ behavior: "smooth" })
+              }
               className="mt-5 px-6 py-3 rounded-full bg-white text-gray-900 font-semibold shadow-xl hover:scale-105 transition"
             >
               शोधा (Search)
             </button>
           </div>
 
-          {/* RIGHT POSTER */}
-          <div className="mt-6 md:mt-0 w-full md:w-[46%] flex justify-center">
+          {/* RIGHT POSTER (full portrait) */}
+          <div className="mt-6 md:mt-0 w-full md:w-[42%] flex justify-center">
             <img
               src={HERO_IMG}
               className="w-full max-h-[430px] object-contain drop-shadow-2xl rounded-xl"
             />
           </div>
-
         </div>
       </div>
 
-      {/* ========================= MAIN ========================= */}
-      <main className="max-w-5xl mx-auto px-4 md:px-6 -mt-10">
+      {/* ========================= BANNER SECTION ========================= */}
+      <div className="max-w-5xl mx-auto px-4 md:px-6 -mt-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="w-full rounded-xl overflow-hidden shadow-xl"
+        >
+          <img
+            src={BANNER_IMG}
+            alt="Candidate Banner"
+            className="w-full object-cover"
+          />
+        </motion.div>
+      </div>
 
-        {/* Sticky Search */}
+      {/* ========================= SEARCH ========================= */}
+      <main className="max-w-5xl mx-auto px-4 md:px-6 mt-10">
+
         <div id="search" className="sticky top-6 z-40">
           <div
             className={`backdrop-blur-md p-4 rounded-2xl shadow-lg ${
@@ -159,19 +177,13 @@ export default function Page() {
           </div>
         </div>
 
-        {/* ========================= INSIGHTS ========================= */}
-        <section className="mt-8">
-          <img
-            src={INSIGHTS_IMG}
-            className="w-full rounded-xl shadow-lg object-contain"
-          />
-        </section>
-
         {/* ========================= RESULTS ========================= */}
-        <section id="results" className="mt-10">
+        <section id="results" className="mt-12">
           {filtered.length > 0 && (
             <div className="mb-4 flex items-center justify-between">
-              <span className="text-sm text-gray-500">Results: <b>{filtered.length}</b></span>
+              <span className="text-sm text-gray-500">
+                Results: <b>{filtered.length}</b>
+              </span>
 
               <button
                 onClick={() => window.print()}
@@ -187,9 +199,10 @@ export default function Page() {
               {filtered.map((v) => (
                 <motion.div
                   key={v.voter_id}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
+                  transition={{ duration: 0.3 }}
                   className={`p-4 rounded-xl shadow cursor-pointer ${
                     darkMode ? "bg-gray-800" : "bg-white"
                   }`}
@@ -208,7 +221,21 @@ export default function Page() {
           </div>
         </section>
 
-        {/* FOOTER */}
+        {/* ========================= INSIGHTS (LAST) ========================= */}
+        <section className="mt-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-xl shadow-xl overflow-hidden"
+          >
+            <img
+              src={INSIGHTS_IMG}
+              className="w-full object-contain rounded-xl"
+            />
+          </motion.div>
+        </section>
+
         <Footer />
       </main>
 
@@ -219,7 +246,6 @@ export default function Page() {
         voter={selected}
         darkMode={darkMode}
       />
-
     </div>
   );
 }
