@@ -10,6 +10,40 @@ interface ModalProps {
 }
 
 export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) {
+
+  // --- SHARE FUNCTION ---
+  function shareVoter(voter: any) {
+    if (!voter) return;
+
+    const text = `
+🗳️ *Ward 16 (B) — Voter Details*
+
+👤 नाव: ${voter.name_marathi}
+🏠 घर क्रमांक: ${voter.house_no}
+🧑‍🤝‍🧑 नाते: ${voter.relation_type} - ${voter.relation_name_marathi}
+🪪 EPIC: ${voter.voter_id}
+🔢 अनुक्रमांक: ${voter.serial_no}
+
+----------------------------------------
+🌟 आमचे अधिकृत उमेदवार:
+*पाटील चंदन बस्वराज (नागराळकर)*  
+भारतीय राष्ट्रीय काँग्रेस — उदगीर
+
+
+    // Native share (Android/iOS)
+    if (navigator.share) {
+      navigator.share({
+        title: "Voter Details",
+        text,
+      }).catch(() => {});
+      return;
+    }
+
+    // WhatsApp fallback
+    const wa = "https://wa.me/?text=" + encodeURIComponent(text);
+    window.open(wa, "_blank");
+  }
+
   return (
     <AnimatePresence>
       {isOpen && voter && (
@@ -27,7 +61,9 @@ export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) 
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
           >
-            <h2 className="text-xl font-semibold mb-4">{voter.name_marathi}</h2>
+            <h2 className="text-xl font-semibold mb-4 text-center">
+              {voter.name_marathi}
+            </h2>
 
             <div className="space-y-2 text-sm">
               <p><b>घर क्रमांक:</b> {voter.house_no}</p>
@@ -39,9 +75,18 @@ export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) 
               <p><b>अनुक्रमांक:</b> {voter.serial_no}</p>
             </div>
 
+            {/* SHARE BUTTON — FIRST */}
+            <button
+              onClick={() => shareVoter(voter)}
+              className="mt-6 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
+            >
+              Share
+            </button>
+
+            {/* CLOSE BUTTON — SECOND */}
             <button
               onClick={onClose}
-              className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+              className="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
             >
               Close
             </button>
