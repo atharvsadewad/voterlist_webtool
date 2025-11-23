@@ -1,35 +1,9 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 /* ----------------------------------------------
-   PRINT LOGIC — Works for both pages
+   PERFECT PRINT LOGIC (Final - Clean)
 ------------------------------------------------- */
 @media print {
-  /* Hide everything except #print-area */
+
+  /* Hide everything except print area */
   body * {
     visibility: hidden !important;
   }
@@ -39,16 +13,20 @@ body {
     visibility: visible !important;
   }
 
+  /* Position print area */
   #print-area {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     padding: 20px;
+
+    /* 2 column layout */
     column-count: 2;
     column-gap: 32px;
   }
 
+  /* Each card */
   .print-card {
     border: 1px solid #999;
     border-radius: 10px;
@@ -61,6 +39,12 @@ body {
     box-shadow: 0 0 4px rgba(0,0,0,0.15);
   }
 
-  .print-only { display: block !important; }
-  .no-print { display: none !important; }
+  /* Classes for toggling */
+  .print-only {
+    display: block !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
 }
