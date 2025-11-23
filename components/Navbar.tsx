@@ -10,7 +10,7 @@ export default function Navbar() {
     <nav className="w-full backdrop-blur bg-white/80 shadow-sm sticky top-0 z-50">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
 
-        {/* LEFT LOGO + TITLE (visible on mobile + desktop) */}
+        {/* LEFT LOGO + TEXT */}
         <div className="flex items-center gap-3">
           <Image
             src="/navbar.jpg"
@@ -19,8 +19,7 @@ export default function Navbar() {
             alt="INC"
             className="rounded-full border shadow-sm"
           />
-
-          <span className="font-semibold text-gray-800 text-sm md:text-lg leading-tight">
+          <span className="hidden md:block font-semibold text-gray-800 text-lg">
             Indian National Congress, Udgir
           </span>
         </div>
@@ -28,6 +27,7 @@ export default function Navbar() {
         {/* DESKTOP MENU */}
         <div className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
           <a href="/" className="hover:text-green-700">Home</a>
+          <a href="/alphabetical" className="hover:text-green-700">Alphabetical</a>
           <a href="/gallery" className="hover:text-green-700">Gallery</a>
           <a href="/work" className="hover:text-green-700">Work</a>
           <a href="/contact" className="hover:text-green-700">Contact</a>
@@ -48,12 +48,11 @@ export default function Navbar() {
             <path d="M4 7h18M4 13h18M4 19h18" />
           </svg>
         </button>
-
       </div>
 
       {/* MOBILE MENU */}
       {open && (
-        <div className="md:hidden bg-white border-t shadow-inner">
+        <div className="md:hidden bg-white border-t shadow-inner animate-slideDown">
           <a
             href="/"
             onClick={() => setOpen(false)}
@@ -61,6 +60,15 @@ export default function Navbar() {
           >
             Home
           </a>
+
+          <a
+            href="/alphabetical"
+            onClick={() => setOpen(false)}
+            className="block px-6 py-3 border-b text-gray-800"
+          >
+            Alphabetical
+          </a>
+
           <a
             href="/gallery"
             onClick={() => setOpen(false)}
@@ -68,6 +76,7 @@ export default function Navbar() {
           >
             Gallery
           </a>
+
           <a
             href="/work"
             onClick={() => setOpen(false)}
@@ -75,6 +84,7 @@ export default function Navbar() {
           >
             Work
           </a>
+
           <a
             href="/contact"
             onClick={() => setOpen(false)}
