@@ -10,7 +10,7 @@ export default function Navbar() {
     <nav className="w-full backdrop-blur bg-white/80 shadow-sm sticky top-0 z-50">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
 
-        {/* LEFT LOGO + TEXT */}
+        {/* LEFT LOGO + TITLE (visible on mobile + desktop) */}
         <div className="flex items-center gap-3">
           <Image
             src="/navbar.jpg"
@@ -19,7 +19,8 @@ export default function Navbar() {
             alt="INC"
             className="rounded-full border shadow-sm"
           />
-          <span className="hidden md:block font-semibold text-gray-800 text-lg">
+
+          <span className="font-semibold text-gray-800 text-sm md:text-lg leading-tight">
             Indian National Congress, Udgir
           </span>
         </div>
