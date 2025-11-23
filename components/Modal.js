@@ -1,11 +1,11 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function Modal({ isOpen, onClose, voter }) {
+export default function Modal({ isOpen, onClose, voter, darkMode }) {
   return (
     <AnimatePresence>
-      {isOpen && (
+      {isOpen && voter && (
         <motion.div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
           initial={{ opacity: 0 }}
@@ -13,28 +13,28 @@ export default function Modal({ isOpen, onClose, voter }) {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-white rounded-xl p-6 w-[90%] max-w-md shadow-xl"
+            className={`rounded-xl p-6 w-[90%] max-w-md shadow-xl ${
+              darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
+            }`}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
           >
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">
-              {voter.fullname}
-            </h2>
+            <h2 className="text-xl font-semibold mb-4">{voter.name_marathi}</h2>
 
-            <div className="space-y-2 text-gray-700 text-sm">
-              <p><b>घर क्रमांक:</b> {voter.house}</p>
-              <p><b>नाव:</b> {voter.fullname}</p>
-              <p><b>नाते:</b> {voter.relation}</p>
+            <div className="space-y-2 text-sm">
+              <p><b>घर क्रमांक:</b> {voter.house_no}</p>
+              <p><b>नाते:</b> {voter.relation_type}</p>
+              <p><b>नाव (नाते):</b> {voter.relation_name_marathi}</p>
               <p><b>वय:</b> {voter.age}</p>
-              <p><b>EPIC:</b> {voter.epic}</p>
-              <p><b>श्रेणी:</b> {voter.section}</p>
-              <p><b>अनुक्रमांक:</b> {voter.serial}</p>
+              <p><b>लिंग:</b> {voter.gender}</p>
+              <p><b>EPIC:</b> {voter.voter_id}</p>
+              <p><b>अनुक्रमांक:</b> {voter.serial_no}</p>
             </div>
 
             <button
               onClick={onClose}
-              className="mt-6 w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+              className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
             >
               Close
             </button>
