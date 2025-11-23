@@ -1,87 +1,88 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-md">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        
-        {/* LEFT: Logo */}
-        <div className="flex items-center gap-3">
-          <img
-            src="/navbar.jpg"
-            alt="INC Udgir"
-            className="h-10 w-auto object-contain"
-          />
+    <nav className="w-full backdrop-blur bg-white/80 shadow-sm sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
 
-          <span className="hidden sm:block font-semibold text-gray-800 text-lg tracking-wide">
+        {/* LEFT LOGO + TEXT */}
+        <div className="flex items-center gap-3">
+          <Image
+            src="/navbar.jpg"
+            width={42}
+            height={42}
+            alt="INC"
+            className="rounded-full border shadow-sm"
+          />
+          <span className="hidden md:block font-semibold text-gray-800 text-lg">
             Indian National Congress, Udgir
           </span>
         </div>
 
         {/* DESKTOP MENU */}
-        <nav className="hidden md:flex items-center gap-8">
-          <a href="/" className="hover:text-blue-600 font-medium">Home</a>
-          <a href="/gallery" className="hover:text-blue-600 font-medium">Gallery</a>
-          <a href="/work" className="hover:text-blue-600 font-medium">Work</a>
-          <a href="/contact" className="hover:text-blue-600 font-medium">Contact</a>
-        </nav>
-
-        {/* MOBILE HAMBURGER */}
-        <div className="md:hidden">
-          <button
-            onClick={() => setOpen(!open)}
-            aria-label="menu"
-            className="p-2 rounded-md bg-white/60 shadow"
-          >
-            <svg width="24" height="24" stroke="#222" strokeWidth="1.8">
-              <path d="M3 6h18M3 12h18M3 18h18" />
-            </svg>
-          </button>
+        <div className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
+          <a href="/" className="hover:text-green-700">Home</a>
+          <a href="/gallery" className="hover:text-green-700">Gallery</a>
+          <a href="/work" className="hover:text-green-700">Work</a>
+          <a href="/contact" className="hover:text-green-700">Contact</a>
         </div>
-      </div>
 
-      {/* Congress color underline */}
-      <div className="h-[4px] w-full bg-gradient-to-r from-[#138808] via-white to-[#ff9933]" />
-
-      {/* MOBILE MENU (Slide-in) */}
-      <div
-        className={`fixed inset-0 z-40 md:hidden pointer-events-none transition ${
-          open ? "opacity-100 pointer-events-auto" : "opacity-0"
-        }`}
-      >
-        {/* overlay */}
-        <div
-          className={`absolute inset-0 bg-black/40 transition-opacity ${
-            open ? "opacity-100" : "opacity-0"
-          }`}
-          onClick={() => setOpen(false)}
-        />
-
-        {/* slide menu */}
-        <nav
-          className={`absolute right-0 top-0 h-full w-72 bg-white p-6 shadow-xl transform transition-transform ${
-            open ? "translate-x-0" : "translate-x-full"
-          }`}
+        {/* MOBILE MENU BUTTON */}
+        <button
+          className="md:hidden flex items-center"
+          onClick={() => setOpen(!open)}
         >
-          <button
-            onClick={() => setOpen(false)}
-            className="mb-6 px-3 py-1 rounded hover:bg-gray-100 text-sm"
+          <svg
+            width="26"
+            height="26"
+            fill="none"
+            stroke="black"
+            strokeWidth="2"
           >
-            Close
-          </button>
+            <path d="M4 7h18M4 13h18M4 19h18" />
+          </svg>
+        </button>
 
-          <ul className="flex flex-col gap-6 text-lg">
-            <li><a href="/" onClick={() => setOpen(false)}>Home</a></li>
-            <li><a href="/gallery" onClick={() => setOpen(false)}>Gallery</a></li>
-            <li><a href="/work" onClick={() => setOpen(false)}>Work</a></li>
-            <li><a href="/contact" onClick={() => setOpen(false)}>Contact</a></li>
-          </ul>
-        </nav>
       </div>
-    </header>
+
+      {/* MOBILE MENU */}
+      {open && (
+        <div className="md:hidden bg-white border-t shadow-inner">
+          <a
+            href="/"
+            onClick={() => setOpen(false)}
+            className="block px-6 py-3 border-b text-gray-800"
+          >
+            Home
+          </a>
+          <a
+            href="/gallery"
+            onClick={() => setOpen(false)}
+            className="block px-6 py-3 border-b text-gray-800"
+          >
+            Gallery
+          </a>
+          <a
+            href="/work"
+            onClick={() => setOpen(false)}
+            className="block px-6 py-3 border-b text-gray-800"
+          >
+            Work
+          </a>
+          <a
+            href="/contact"
+            onClick={() => setOpen(false)}
+            className="block px-6 py-3 text-gray-800"
+          >
+            Contact
+          </a>
+        </div>
+      )}
+    </nav>
   );
 }
