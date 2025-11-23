@@ -16,7 +16,6 @@ export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) 
     if (!voter) return;
 
     const text = `
-const text = `
 🗳️ *Ward 16 — Voter Details*
 
 👤 नाव: ${voter.name_marathi}
