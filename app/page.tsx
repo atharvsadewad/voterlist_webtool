@@ -56,8 +56,9 @@ export default function Page() {
   const handlePrint = () => window.print();
 
   // Image paths (your uploaded files)
-  const HERO_IMG = "/mnt/data/IMG-20251123-WA0004.jpg";
-  const INSIGHTS_IMG = "/mnt/data/PHOTO-2025-11-22-19-17-37.jpg";
+  const HERO_IMG = "/IMG-20251123-WA0004.jpg";
+const INSIGHTS_IMG = "/PHOTO-2025-11-22-19-17-37.jpg";
+
 
   return (
     <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"} min-h-screen`}>
