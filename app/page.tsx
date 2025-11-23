@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
 import Footer from "../components/Footer";
 
@@ -61,28 +62,20 @@ export default function Page() {
     }, 150);
   };
 
+  // local uploaded images — preview-friendly paths
   const HERO_IMG = "/IMG-20251123-WA0004.jpg";
   const BANNER_IMG = "/banner.jpg";
   const INSIGHTS_IMG = "/PHOTO-2025-11-22-19-17-37.jpg";
 
   return (
     <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-50"} min-h-screen`}>
+      <Navbar />
 
-      {/* ========================= HERO ========================= */}
-      <div className="relative w-full h-[480px] md:h-[550px] overflow-hidden">
-
-        {/* Blurred background */}
-        <img
-          src={HERO_IMG}
-          className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-60"
-        />
-
-        {/* Layout */}
+      {/* HERO */}
+      <div className="relative w-full h-[460px] md:h-[520px] overflow-hidden">
+        <img src={HERO_IMG} className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-60" />
         <div className="absolute inset-0 flex flex-col md:flex-row items-center justify-between px-6 md:px-16">
-
-          {/* LEFT TEXT */}
           <div className="max-w-lg mt-6 md:mt-0">
-
             <div className="bg-white/70 text-gray-700 text-sm font-semibold px-4 py-1 rounded-md inline-block mb-3">
               भारतीय राष्ट्रीय काँग्रेस (महाविकास आघाडी)
             </div>
@@ -93,32 +86,25 @@ export default function Page() {
               </span>
             </h1>
 
-            <p className="text-xl md:text-3xl font-semibold text-white drop-shadow-lg mt-2">
-              Ward 16 (B)
-            </p>
+            <p className="text-xl md:text-3xl font-semibold text-white drop-shadow-lg mt-2">Ward 16 (B)</p>
 
             <button
-              onClick={() =>
-                document.getElementById("search")?.scrollIntoView({ behavior: "smooth" })
-              }
+              onClick={() => document.getElementById("search")?.scrollIntoView({ behavior: "smooth" })}
               className="mt-5 px-6 py-3 rounded-full bg-white text-gray-900 font-semibold shadow-xl hover:scale-105 transition"
             >
               शोधा (Search)
             </button>
           </div>
 
-          {/* RIGHT POSTER (full portrait) */}
+          {/* Right poster */}
           <div className="mt-6 md:mt-0 w-full md:w-[42%] flex justify-center">
-            <img
-              src={HERO_IMG}
-              className="w-full max-h-[430px] object-contain drop-shadow-2xl rounded-xl"
-            />
+            <img src={HERO_IMG} className="w-full max-h-[420px] object-contain drop-shadow-2xl rounded-xl" />
           </div>
         </div>
       </div>
 
-      {/* ========================= BANNER SECTION ========================= */}
-      <div className="max-w-5xl mx-auto px-4 md:px-6 -mt-8">
+      {/* BANNER - separated cleanly, no negative margin */}
+      <div className="max-w-5xl mx-auto px-4 md:px-6 mt-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -126,30 +112,19 @@ export default function Page() {
           transition={{ duration: 0.6 }}
           className="w-full rounded-xl overflow-hidden shadow-xl"
         >
-          <img
-            src={BANNER_IMG}
-            alt="Candidate Banner"
-            className="w-full object-cover"
-          />
+          <img src={BANNER_IMG} alt="Candidate Banner" className="w-full object-cover" />
         </motion.div>
       </div>
 
-      {/* ========================= SEARCH ========================= */}
+      {/* MAIN */}
       <main className="max-w-5xl mx-auto px-4 md:px-6 mt-10">
-
+        {/* SEARCH — fixed for mobile: stack on small screens */}
         <div id="search" className="sticky top-6 z-40">
-          <div
-            className={`backdrop-blur-md p-4 rounded-2xl shadow-lg ${
-              darkMode ? "bg-black/40" : "bg-white/80"
-            }`}
-          >
-            <div className="flex gap-3 items-center">
-
+          <div className={`backdrop-blur-md p-4 rounded-2xl shadow-lg ${darkMode ? "bg-black/40" : "bg-white/80"}`}>
+            <div className="flex flex-col md:flex-row gap-3 items-stretch">
               <input
                 className={`flex-1 p-3 rounded-xl outline-none focus:ring-2 ${
-                  darkMode
-                    ? "bg-gray-800 text-white focus:ring-blue-400"
-                    : "bg-white text-gray-800 focus:ring-blue-500"
+                  darkMode ? "bg-gray-800 text-white focus:ring-blue-400" : "bg-white text-gray-800 focus:ring-blue-500"
                 }`}
                 placeholder="Search नाव / आडनाव / EPIC..."
                 value={query}
@@ -157,27 +132,34 @@ export default function Page() {
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               />
 
-              <button
-                onClick={handleSearch}
-                className="px-5 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700"
-              >
-                Search
-              </button>
+              <div className="flex gap-2 md:flex-row md:items-center">
+                <button onClick={handleSearch} className="px-5 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700">
+                  Search
+                </button>
 
-              <button
-                onClick={() => {
-                  setQuery("");
-                  setFiltered([]);
-                }}
-                className="px-3 py-3 rounded-xl bg-gray-200 dark:bg-gray-700"
-              >
-                Clear
-              </button>
+                <button
+                  onClick={() => {
+                    setQuery("");
+                    setFiltered([]);
+                  }}
+                  className="px-4 py-3 rounded-xl bg-gray-200 dark:bg-gray-700"
+                >
+                  Clear
+                </button>
+
+                {/* Dark-mode toggle small */}
+                <button
+                  onClick={() => setDarkMode(!darkMode)}
+                  className="px-3 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 ml-0 md:ml-2"
+                >
+                  {darkMode ? "Light" : "Dark"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* ========================= RESULTS ========================= */}
+        {/* RESULTS */}
         <section id="results" className="mt-12">
           {filtered.length > 0 && (
             <div className="mb-4 flex items-center justify-between">
@@ -185,10 +167,7 @@ export default function Page() {
                 Results: <b>{filtered.length}</b>
               </span>
 
-              <button
-                onClick={() => window.print()}
-                className="px-3 py-2 bg-green-600 text-white rounded print:hidden"
-              >
+              <button onClick={() => window.print()} className="px-3 py-2 bg-green-600 text-white rounded print:hidden">
                 Print
               </button>
             </div>
@@ -203,49 +182,30 @@ export default function Page() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3 }}
-                  className={`p-4 rounded-xl shadow cursor-pointer ${
-                    darkMode ? "bg-gray-800" : "bg-white"
-                  }`}
+                  className={`p-4 rounded-xl shadow cursor-pointer ${darkMode ? "bg-gray-800" : "bg-white"}`}
                   onClick={() => setSelected(v)}
                 >
                   <div className="text-lg font-semibold">{v.name_marathi}</div>
-                  <div className="text-sm text-gray-500">
-                    घर क्रमांक: {v.house_no} • वय: {v.age}
-                  </div>
-                  <div className="text-xs text-gray-400 mt-2">
-                    EPIC: {v.voter_id} • अनुक्रमांक: {v.serial_no}
-                  </div>
+                  <div className="text-sm text-gray-500">घर क्रमांक: {v.house_no} • वय: {v.age}</div>
+                  <div className="text-xs text-gray-400 mt-2">EPIC: {v.voter_id} • अनुक्रमांक: {v.serial_no}</div>
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
         </section>
 
-        {/* ========================= INSIGHTS (LAST) ========================= */}
+        {/* INSIGHTS LAST */}
         <section className="mt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="rounded-xl shadow-xl overflow-hidden"
-          >
-            <img
-              src={INSIGHTS_IMG}
-              className="w-full object-contain rounded-xl"
-            />
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-xl shadow-xl overflow-hidden">
+            <img src={INSIGHTS_IMG} className="w-full object-contain rounded-xl" />
           </motion.div>
         </section>
 
         <Footer />
       </main>
 
-      {/* ========================= MODAL ========================= */}
-      <Modal
-        isOpen={!!selected}
-        onClose={() => setSelected(null)}
-        voter={selected}
-        darkMode={darkMode}
-      />
+      {/* MODAL */}
+      <Modal isOpen={!!selected} onClose={() => setSelected(null)} voter={selected} darkMode={darkMode} />
     </div>
   );
-}
+} 
