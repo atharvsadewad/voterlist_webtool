@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-/* ------------------------------
-   THEME VARIABLES
---------------------------------*/
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -22,47 +19,48 @@
   }
 }
 
-/* ------------------------------
-   GLOBAL BODY STYLE
---------------------------------*/
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ===================================================================
-   UNIVERSAL PRINT LOGIC  
-   - Only the #print-area is printed  
-   - Everything else is hidden  
-   - 2-column card layout  
-=================================================================== */
-/* PRINT LAYOUT FIX — NO NEW TAB ISSUE */
+/* ----------------------------------------------
+   PRINT LOGIC — Works for both pages
+------------------------------------------------- */
 @media print {
-  @page {
-    margin: 12mm;
+  /* Hide everything except #print-area */
+  body * {
+    visibility: hidden !important;
   }
 
-  /* Hide navbar, buttons, search, letter-bar */
-  nav,
-  .no-print,
-  .print:hidden {
-    display: none !important;
+  #print-area,
+  #print-area * {
+    visibility: visible !important;
   }
 
-  /* Make grid 2 columns in print */
   #print-area {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    column-count: 2;
+    column-gap: 32px;
   }
 
-  /* Cards */
   .print-card {
     border: 1px solid #999;
-    padding: 10px;
-    border-radius: 8px;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
     break-inside: avoid;
     background: white !important;
+    font-size: 13px;
+    line-height: 1.35;
+    box-shadow: 0 0 4px rgba(0,0,0,0.15);
   }
+
+  .print-only { display: block !important; }
+  .no-print { display: none !important; }
 }
