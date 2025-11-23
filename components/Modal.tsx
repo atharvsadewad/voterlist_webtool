@@ -30,7 +30,6 @@ export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) 
 भारतीय राष्ट्रीय काँग्रेस — उदगीर
 
 
-    // Native share (Android/iOS)
     if (navigator.share) {
       navigator.share({
         title: "Voter Details",
@@ -39,7 +38,6 @@ export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) 
       return;
     }
 
-    // WhatsApp fallback
     const wa = "https://wa.me/?text=" + encodeURIComponent(text);
     window.open(wa, "_blank");
   }
@@ -54,9 +52,10 @@ export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) 
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className={`rounded-xl p-6 w-[90%] max-w-md shadow-xl ${
-              darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
-            }`}
+            className={
+              (darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800") +
+              " rounded-xl p-6 w-[90%] max-w-md shadow-xl"
+            }
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
@@ -75,7 +74,7 @@ export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) 
               <p><b>अनुक्रमांक:</b> {voter.serial_no}</p>
             </div>
 
-            {/* SHARE BUTTON — FIRST */}
+            {/* SHARE BUTTON */}
             <button
               onClick={() => shareVoter(voter)}
               className="mt-6 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
@@ -83,7 +82,7 @@ export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) 
               Share
             </button>
 
-            {/* CLOSE BUTTON — SECOND */}
+            {/* CLOSE BUTTON */}
             <button
               onClick={onClose}
               className="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
