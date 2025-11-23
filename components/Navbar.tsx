@@ -20,9 +20,9 @@ export default function Navbar() {
             className="rounded-full border shadow-sm"
           />
 
-          {/* MOBILE = "INC", DESKTOP = full text */}
+          {/* MOBILE = "Indian National Congress, Udgir", DESKTOP = full text */}
           <span className="font-semibold text-gray-800 text-lg md:hidden">
-            INC
+            Indian National Congress, Udgir
           </span>
 
           <span className="hidden md:block font-semibold text-gray-800 text-lg whitespace-nowrap">
