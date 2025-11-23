@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Voter {
@@ -12,165 +12,257 @@ interface Voter {
   house_no: string;
   age: number;
   gender: string;
-  source_page?: number;
+  // optional fields may exist
+  photo?: string;
 }
 
 export default function Page() {
+  const [darkMode, setDarkMode] = useState(false);
   const [query, setQuery] = useState("");
   const [voters, setVoters] = useState<Voter[]>([]);
   const [filtered, setFiltered] = useState<Voter[]>([]);
   const [selected, setSelected] = useState<Voter | null>(null);
 
-  // Load JSON once
+  // restore dark mode
+  useEffect(() => {
+    const saved = typeof window !== "undefined" ? localStorage.getItem("voter_dark") : null;
+    if (saved) setDarkMode(saved === "1");
+  }, []);
+  useEffect(() => {
+    if (typeof window !== "undefined") localStorage.setItem("voter_dark", darkMode ? "1" : "0");
+  }, [darkMode]);
+
+  // load voters once
   useEffect(() => {
     fetch(`/voters.json?t=${Date.now()}`)
-      .then((res) => res.json())
-      .then((data) => setVoters(data));
+      .then((r) => r.json())
+      .then((d) => setVoters(d))
+      .catch(() => setVoters([]));
   }, []);
 
-  // 🔍 SEARCH ONLY WHEN BUTTON CLICKED
   const handleSearch = () => {
     if (!query.trim()) return setFiltered([]);
-
     const q = query.trim().toLowerCase();
-
-    const results = voters.filter((v) =>
-      v.name_marathi.toLowerCase().includes(q)
+    const res = voters.filter(
+      (v) =>
+        (v.name_marathi || "").toLowerCase().includes(q) ||
+        (v.relation_name_marathi || "").toLowerCase().includes(q) ||
+        (v.voter_id || "").toLowerCase().includes(q)
     );
-
-    setFiltered(results);
+    setFiltered(res);
+    setTimeout(() => document.getElementById("results")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
   };
 
-  // PRINT
   const handlePrint = () => window.print();
 
+  // Image paths (your uploaded files)
+  const HERO_IMG = "/mnt/data/IMG-20251123-WA0004.jpg";
+  const INSIGHTS_IMG = "/mnt/data/PHOTO-2025-11-22-19-17-37.jpg";
+
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-10">
-
-      {/* TITLE */}
-      <h1 className="text-3xl font-semibold text-gray-800 mb-6 text-center">
-        🗳️ Ward No. 16 — Voter Search
-      </h1>
-
-      {/* SEARCH BAR */}
-      <div className="flex gap-3 mb-6">
-        <motion.input
-          layout
-          type="text"
-          placeholder="Search नाव / आडनाव / EPIC…"
-          className="w-full p-4 rounded-xl bg-white shadow focus:ring-2 
-                     focus:ring-blue-500 outline-none text-gray-800"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
+    <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"} min-h-screen`}>
+      {/* HERO — full width poster (fit) */}
+      <div className="w-full h-[340px] md:h-[420px] relative overflow-hidden">
+        <img
+          src={HERO_IMG}
+          alt="Hero Poster"
+          className="object-cover w-full h-full"
+          style={{ objectPosition: "center" }}
         />
+        {/* overlay */}
+        <div className="absolute inset-0 bg-black/25" />
+        {/* heading + CTA */}
+        <div className="absolute inset-0 flex flex-col items-start justify-center px-6 md:px-16 gap-4">
+          <div className="rounded-md px-3 py-1 bg-white/80 text-sm font-semibold text-gray-800 inline-block">
+            भारतीय राष्ट्रीय काँग्रेस (महाविकास आघाडी)
+          </div>
 
-        {/* SEARCH BUTTON */}
-        <button
-          onClick={handleSearch}
-          className="px-5 py-4 bg-blue-600 text-white rounded-xl shadow 
-                     hover:bg-blue-700"
-        >
-          Search
-        </button>
+          <h1 className="text-2xl md:text-4xl font-extrabold leading-tight drop-shadow-lg">
+            <span className="block">{`चंदन बसवराज पाटील (नागराळकर)`}</span>
+            <span className="block text-lg md:text-2xl mt-1">ward 16 (B)</span>
+          </h1>
+
+          <div className="mt-3">
+            <button
+              onClick={() => document.getElementById("search")?.scrollIntoView({ behavior: "smooth" })}
+              className="px-5 py-3 rounded-full bg-white text-gray-900 font-semibold shadow hover:scale-[1.02] transition-transform"
+            >
+              शोधा (Search)
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* PRINT BUTTON */}
-      {filtered.length > 0 && (
-        <button
-          onClick={handlePrint}
-          className="mb-6 px-4 py-2 bg-green-600 text-white rounded-lg shadow 
-                     hover:bg-green-700 print:hidden"
-        >
-          Print Results
-        </button>
-      )}
-
-      {/* RESULTS */}
-      <AnimatePresence>
-        {filtered.length > 0 && (
-          <motion.div
-            layout
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="space-y-3 print:grid print:grid-cols-2 print:gap-4"
+      <main className="max-w-5xl mx-auto px-4 md:px-6 -mt-12"> 
+        {/* sticky search area */}
+        <div id="search" className="sticky top-6 z-40">
+          <div
+            className={`backdrop-blur-md p-4 rounded-2xl shadow-lg ${darkMode ? "bg-black/40" : "bg-white/80"}`}
           >
-            {filtered.map((voter) => (
-              <motion.div
-                key={voter.voter_id}
-                layout
-                className="p-4 bg-white rounded-xl shadow border cursor-pointer 
-                           hover:bg-blue-50 transition-all print:shadow-none 
-                           print:border print:text-sm"
-                onClick={() => setSelected(voter)}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+            <div className="flex gap-3 items-center">
+              <input
+                className={`flex-1 p-3 rounded-xl outline-none focus:ring-2 ${
+                  darkMode ? "bg-gray-800 text-white focus:ring-blue-400" : "bg-white text-gray-800 focus:ring-blue-500"
+                }`}
+                placeholder="Search नाव / आडनाव / EPIC..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSearch();
+                }}
+              />
+              <button onClick={handleSearch} className="px-5 py-3 rounded-xl bg-blue-600 text-white shadow hover:bg-blue-700">
+                Search
+              </button>
+              <button
+                onClick={() => {
+                  setQuery("");
+                  setFiltered([]);
+                }}
+                className="px-3 py-3 rounded-xl bg-gray-200 dark:bg-gray-700"
               >
-                {/* NORMAL VIEW */}
-                <div className="print:hidden">
-                  <h2 className="text-lg font-semibold text-gray-700">
-                    {voter.name_marathi}
-                  </h2>
-                  <p className="text-gray-500 text-sm">
-                    घर क्रमांक: {voter.house_no} • वय: {voter.age}
-                  </p>
-                </div>
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
 
-                {/* PRINT VIEW */}
-                <div className="hidden print:block leading-5">
-                  <p><b>नाव:</b> {voter.name_marathi}</p>
-                  <p><b>घर क्रमांक:</b> {voter.house_no}</p>
-                  <p><b>नाते:</b> {voter.relation_type}</p>
-                  <p><b>नाव (नाते):</b> {voter.relation_name_marathi}</p>
-                  <p><b>वय:</b> {voter.age}</p>
-                  <p><b>लिंग:</b> {voter.gender}</p>
-                  <p><b>EPIC:</b> {voter.voter_id}</p>
-                  <p><b>अनुक्रमांक:</b> {voter.serial_no}</p>
-                </div>
-              </motion.div>
-            ))}
+        {/* Insights */}
+        <section className="mt-6 bg-transparent">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <img src={INSIGHTS_IMG} alt="Ward 16 Snapshot" className="w-full rounded-xl shadow-md object-contain" />
           </motion.div>
-        )}
-      </AnimatePresence>
+        </section>
 
-      {/* MODAL */}
+        {/* Candidate details */}
+        <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          <div className={`col-span-1 rounded-xl p-4 ${darkMode ? "bg-gray-800" : "bg-white"} shadow`}>
+            <img src={HERO_IMG} alt="Candidate photo" className="w-full h-48 object-cover rounded-md mb-3" />
+            <div className="text-lg font-bold">चंदन बसवराज पाटील (नागराळकर)</div>
+            <div className="text-sm text-gray-500 mb-2">प्रभाग क्र. १६ — नगरसेवक पदाचे उमेदवार</div>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="w-10 h-10 rounded bg-white flex items-center justify-center border">
+                {/* party symbol — using a simple hand emoji since we don't have asset */}
+                ✋
+              </div>
+              <div className="text-sm">भारतीय राष्ट्रीय काँग्रेस (महाविकास आघाडी)</div>
+            </div>
+
+            <div className="mt-4 space-y-2">
+              <a
+                href="https://www.instagram.com/chandan_patil_nagralkar"
+                target="_blank"
+                rel="noreferrer"
+                className="block text-sm text-blue-600 underline"
+              >
+                Instagram
+              </a>
+              <a
+                href="https://www.facebook.com/ChandanBaswarajPatilNagralkar?rdid=W1DtEZUwqon0vbIY&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1C1ejDxTUM%2F#"
+                target="_blank"
+                rel="noreferrer"
+                className="block text-sm text-blue-600 underline"
+              >
+                Facebook
+              </a>
+            </div>
+          </div>
+
+          {/* description / CTA */}
+          <div className={`md:col-span-2 rounded-xl p-6 ${darkMode ? "bg-gray-800" : "bg-white"} shadow`}>
+            <h3 className="text-xl font-bold mb-2">उद्दिष्टे / संदेश</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              येथे प्रादेशिक व मतदारांशी संबंधित माहिती आणि तपशील दिलेले आहेत. कृपया अधिकृत मतदार यादी तपासा व खात्री करा.
+            </p>
+            <div className="mt-4">
+              <button
+                onClick={() => document.getElementById("results")?.scrollIntoView({ behavior: "smooth" })}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+              >
+                Search Voters
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* RESULTS */}
+        <section id="results" className="mt-8">
+          {filtered.length > 0 && (
+            <div className="mb-4 flex items-center justify-between">
+              <div className="text-sm text-gray-600">
+                Results: <strong>{filtered.length}</strong>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={handlePrint} className="px-3 py-2 rounded bg-green-600 text-white print:hidden">
+                  Print
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AnimatePresence>
+              {filtered.map((v) => (
+                <motion.div
+                  key={v.voter_id}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{ duration: 0.3 }}
+                  className={`p-4 rounded-xl shadow ${darkMode ? "bg-gray-800" : "bg-white"} cursor-pointer`}
+                  onClick={() => setSelected(v)}
+                >
+                  <div className="font-semibold text-lg">{v.name_marathi}</div>
+                  <div className="text-sm text-gray-500">घर क्रमांक: {v.house_no} • वय: {v.age}</div>
+                  <div className="text-xs mt-2 text-gray-400">EPIC: {v.voter_id} • अनुक्रमांक: {v.serial_no}</div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </section>
+
+        {/* Disclaimer + Footer */}
+        <footer className="mt-12 mb-8 text-sm text-gray-600 dark:text-gray-300">
+          <div className="rounded-xl p-4 bg-white/80 dark:bg-black/40 shadow">
+            <p className="mb-2">
+              सूचित: या वेबसाईटवरील मतदार माहिती कधी कधी चुकीची असू शकते. कृपया अधिकृत प्रकाशित मतदार यादी
+              तपासून खात्री करा.
+            </p>
+            <div className="flex items-center gap-4">
+              <a href="https://www.instagram.com/chandan_patil_nagralkar" target="_blank" rel="noreferrer" className="underline">
+                Instagram
+              </a>
+              <a href="https://www.facebook.com/ChandanBaswarajPatilNagralkar?rdid=W1DtEZUwqon0vbIY&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1C1ejDxTUM%2F#" target="_blank" rel="noreferrer" className="underline">
+                Facebook
+              </a>
+            </div>
+            <div className="text-xs text-gray-400 mt-3">
+              © {new Date().getFullYear()} चंदन बसवराज पाटील (नागराळकर)
+            </div>
+          </div>
+        </footer>
+      </main>
+
+      {/* Modal */}
       <AnimatePresence>
         {selected && (
-          <motion.div
-            className="fixed inset-0 bg-black/50 backdrop-blur flex items-center justify-center p-4 z-50 print:hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelected(null)}
-          >
-            <motion.div
-              className="bg-white rounded-xl max-w-md w-full p-6 shadow-xl"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                {selected.name_marathi}
-              </h2>
-
-              <div className="space-y-2 text-gray-700">
-                <p><b>घर क्रमांक:</b> {selected.house_no}</p>
-                <p><b>नाते:</b> {selected.relation_type}</p>
-                <p><b>नाव (नाते):</b> {selected.relation_name_marathi}</p>
-                <p><b>वय:</b> {selected.age}</p>
-                <p><b>लिंग:</b> {selected.gender}</p>
-                <p><b>EPIC:</b> {selected.voter_id}</p>
-                <p><b>अनुक्रमांक:</b> {selected.serial_no}</p>
+          <motion.div className="fixed inset-0 z-50 flex items-center justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <div className="absolute inset-0 bg-black/50" onClick={() => setSelected(null)} />
+            <motion.div className={`relative max-w-lg w-full rounded-xl p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`} initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}>
+              <h3 className="text-xl font-bold mb-2">{selected.name_marathi}</h3>
+              <div className="text-sm space-y-1">
+                <div><b>घर क्रमांक:</b> {selected.house_no}</div>
+                <div><b>नाते:</b> {selected.relation_type}</div>
+                <div><b>नाव (नाते):</b> {selected.relation_name_marathi}</div>
+                <div><b>वय:</b> {selected.age}</div>
+                <div><b>लिंग:</b> {selected.gender}</div>
+                <div><b>EPIC:</b> {selected.voter_id}</div>
+                <div><b>अनुक्रमांक:</b> {selected.serial_no}</div>
               </div>
 
-              <button
-                onClick={() => setSelected(null)}
-                className="mt-6 w-full py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700"
-              >
-                Close
-              </button>
+              <div className="mt-4 flex gap-2">
+                <button className="px-4 py-2 bg-blue-600 text-white rounded" onClick={() => setSelected(null)}>Close</button>
+              </div>
             </motion.div>
           </motion.div>
         )}
