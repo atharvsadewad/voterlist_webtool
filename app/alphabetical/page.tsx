@@ -3,18 +3,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 
-// ---- VOTER TYPE ----
-interface Voter {
-  serial_no: number;
-  voter_id: string;
-  name_marathi: string;
-  relation_name_marathi: string;
-  relation_type: string;
-  house_no: string;
-  age: number;
-  gender: string;
-}
-
 const LETTERS = [
   "अ","आ","इ","ई","उ","ऊ","ए","ऐ","ओ","औ","अं","अः",
   "क","ख","ग","घ","ङ",
@@ -27,12 +15,23 @@ const LETTERS = [
   "क्ष","ज्ञ"
 ];
 
+interface Voter {
+  serial_no: number;
+  voter_id: string;
+  name_marathi: string;
+  relation_name_marathi: string;
+  relation_type: string;
+  house_no: string;
+  age: number;
+  gender: string;
+}
+
 export default function AlphabeticalPage() {
   const [voters, setVoters] = useState<Voter[]>([]);
   const [selectedLetter, setSelectedLetter] = useState("अ");
   const [query, setQuery] = useState("");
-  const [booth, setBooth] = useState(""); 
 
+  // Marathi-aware sorting
   const collator = useMemo(() => new Intl.Collator("mr"), []);
 
   useEffect(() => {
@@ -41,39 +40,30 @@ export default function AlphabeticalPage() {
       .then((data) => setVoters(data));
   }, []);
 
-  const boothRanges = {
-    "1": { start: 1, end: 850 },
-    "2": { start: 851, end: 1650 },
-    "3": { start: 1651, end: 2500 },
-    "4": { start: 2501, end: 3500 }
-  };
-
-  // --- FILTERED & SORTED LIST ---
+  // Filter + Sort logic
   const filtered = useMemo(() => {
-    let list: Voter[] = [...voters];
+    let list = voters;
 
+    // letter filter
     list = list.filter((v) =>
       (v.name_marathi || "").trim().startsWith(selectedLetter)
     );
 
-    if (booth && boothRanges[booth]) {
-      const { start, end } = boothRanges[booth];
-      list = list.filter(
-        (v) => v.serial_no >= start && v.serial_no <= end
-      );
-    }
-
+    // search inside the letter list
     if (query.trim()) {
-      const q = query.toLowerCase();
+      const q = query.trim().toLowerCase();
       list = list.filter((v) =>
         (v.name_marathi || "").toLowerCase().includes(q)
       );
     }
 
-    return [...list].sort((a, b) =>
+    // sort alphabetically in correct Marathi order
+    list = [...list].sort((a, b) =>
       collator.compare(a.name_marathi, b.name_marathi)
     );
-  }, [voters, selectedLetter, query, booth, collator]);
+
+    return list;
+  }, [voters, selectedLetter, query, collator]);
 
   return (
     <div className="min-h-screen max-w-5xl mx-auto px-4 py-8">
@@ -82,6 +72,7 @@ export default function AlphabeticalPage() {
         Marathi Alphabetical Voter List
       </h1>
 
+      {/* Letters */}
       <div className="flex flex-wrap gap-2 justify-center mb-6">
         {LETTERS.map((l) => (
           <button
@@ -101,19 +92,8 @@ export default function AlphabeticalPage() {
         ))}
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <select
-          value={booth}
-          onChange={(e) => setBooth(e.target.value)}
-          className="p-3 border rounded-lg"
-        >
-          <option value="">All Booths</option>
-          <option value="1">Booth 1</option>
-          <option value="2">Booth 2</option>
-          <option value="3">Booth 3</option>
-          <option value="4">Booth 4</option>
-        </select>
-
+      {/* Search */}
+      <div className="flex mb-6">
         <input
           type="text"
           placeholder={`Search in "${selectedLetter}"...`}
@@ -127,10 +107,11 @@ export default function AlphabeticalPage() {
         Showing <b>{filtered.length}</b> voters starting with <b>{selectedLetter}</b>
       </div>
 
+      {/* Results */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {filtered.map((v, i) => (
+        {filtered.map((v) => (
           <motion.div
-            key={v.voter_id + i}
+            key={v.voter_id}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
