@@ -71,37 +71,56 @@ export default function Page() {
     <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-50"} min-h-screen`}>
       <Navbar />
 
-      {/* HERO */}
-      <div className="relative w-full h-[460px] md:h-[520px] overflow-hidden">
-        <img src={HERO_IMG} className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-60" />
-        <div className="absolute inset-0 flex flex-col md:flex-row items-center justify-between px-6 md:px-16">
-          <div className="max-w-lg mt-6 md:mt-0">
-            <div className="bg-white/70 text-gray-700 text-sm font-semibold px-4 py-1 rounded-md inline-block mb-3">
-              भारतीय राष्ट्रीय काँग्रेस (महाविकास आघाडी)
-            </div>
+{/* ========== HERO FIXED ========== */}
+<div className="relative w-full overflow-hidden pb-10">
 
-            <h1 className="text-3xl md:text-5xl font-extrabold leading-tight">
-              <span className="bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 bg-clip-text text-transparent">
-                पाटील चंदन बस्वराज (नागराळकर)
-              </span>
-            </h1>
+  {/* Blurred background */}
+  <img
+    src={HERO_IMG}
+    className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-60"
+  />
 
-            <p className="text-xl md:text-3xl font-semibold text-white drop-shadow-lg mt-2">Ward 16 (B)</p>
+  {/* Overlay */}
+  <div className="absolute inset-0 bg-black/20" />
 
-            <button
-              onClick={() => document.getElementById("search")?.scrollIntoView({ behavior: "smooth" })}
-              className="mt-5 px-6 py-3 rounded-full bg-white text-gray-900 font-semibold shadow-xl hover:scale-105 transition"
-            >
-              शोधा (Search)
-            </button>
-          </div>
+  {/* CONTENT */}
+  <div className="relative max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center gap-10">
 
-          {/* Right poster */}
-          <div className="mt-6 md:mt-0 w-full md:w-[42%] flex justify-center">
-            <img src={HERO_IMG} className="w-full max-h-[420px] object-contain drop-shadow-2xl rounded-xl" />
-          </div>
-        </div>
+    {/* TEXT LEFT */}
+    <div className="flex-1 text-center md:text-left">
+      <div className="bg-white/70 text-gray-700 text-sm font-semibold px-4 py-1 rounded-md inline-block mb-3">
+        भारतीय राष्ट्रीय काँग्रेस (महाविकास आघाडी)
       </div>
+
+      <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-black drop-shadow-xl">
+        पाटील चंदन बस्वराज (नागराळकर)
+      </h1>
+
+      <p className="text-xl md:text-3xl font-semibold text-white mt-2 drop-shadow-lg">
+        Ward 16 (B)
+      </p>
+
+      <button
+        onClick={() =>
+          document.getElementById("search")?.scrollIntoView({ behavior: "smooth" })
+        }
+        className="mt-5 px-6 py-3 rounded-full bg-white text-gray-900 font-semibold shadow-lg hover:scale-105 transition"
+      >
+        शोधा (Search)
+      </button>
+    </div>
+
+    {/* IMAGE RIGHT */}
+    <div className="flex-1 flex justify-center">
+      <img
+        src={HERO_IMG}
+        className="w-full max-w-sm md:max-w-md object-contain drop-shadow-2xl rounded-xl"
+      />
+    </div>
+  </div>
+</div>
+
+
 
       {/* BANNER - separated cleanly, no negative margin */}
       <div className="max-w-5xl mx-auto px-4 md:px-6 mt-10">
