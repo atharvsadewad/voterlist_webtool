@@ -28,7 +28,7 @@ export default function Footer() {
       </div>
 
       <p className="text-sm text-gray-500">
-        © {new Date().getFullYear()} पाटील चंदन बस्वराज (नागराळकर). All rights reserved.
+        © {new Date().getFullYear()} चंदन बस्वराज पाटील (नागराळकर). All rights reserved.
       </p>
 
       <p className="text-sm text-gray-500 mt-1">
