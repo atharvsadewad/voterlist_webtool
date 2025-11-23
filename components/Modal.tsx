@@ -2,7 +2,14 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Modal({ isOpen, onClose, voter, darkMode }) {
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  voter: any | null;
+  darkMode: boolean;
+}
+
+export default function Modal({ isOpen, onClose, voter, darkMode }: ModalProps) {
   return (
     <AnimatePresence>
       {isOpen && voter && (
