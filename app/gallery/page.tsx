@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from "../components/Navbar";
+import Navbar from "../../components/Navbar";
 
 export default function GalleryPage() {
   const images = Array.from({ length: 7 }, (_, i) => `/gallery${i + 1}.jpg`);
@@ -9,16 +9,16 @@ export default function GalleryPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 py-10">
+      <div className="max-w-5xl mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold mb-6 text-center">Gallery</h1>
 
-        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-          {images.map((src, idx) => (
+        <div className="grid grid-cols-1 gap-6">
+          {images.map((src, i) => (
             <img
-              key={idx}
+              key={i}
               src={src}
-              alt={`Gallery ${idx + 1}`}
-              className="w-full mb-4 rounded-xl shadow-md hover:scale-[1.02] transition"
+              alt={`Gallery ${i + 1}`}
+              className="w-full rounded-xl shadow-lg object-cover"
             />
           ))}
         </div>
