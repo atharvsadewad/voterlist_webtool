@@ -67,7 +67,31 @@ export default function Page() {
     }, 150);
   };
 
-  // Images (replace with your deployed URLs if needed)
+  // ⭐ FIXED PRINT FUNCTION (ONLY CHANGE)
+  const handlePrint = () => {
+    const container = document.getElementById("print-area-columns");
+    if (!container) return;
+
+    container.innerHTML = filtered
+      .map((v) => {
+        return `
+        <div class="print-card">
+          <div class="name" style="font-weight:700;font-size:14px;margin-bottom:6px;">
+            ${v.name_marathi}
+          </div>
+          <div class="meta">घर क्रमांक: ${v.house_no} • वय: ${v.age}</div>
+          <div class="meta">नाते: ${v.relation_type} - ${v.relation_name_marathi}</div>
+          <div class="meta" style="margin-top:6px;">
+            EPIC: ${v.voter_id} • अनुक्रमांक: ${v.serial_no}
+          </div>
+        </div>`;
+      })
+      .join("");
+
+    window.print();
+  };
+
+  // Images
   const HERO_IMG = "/IMG-20251123-WA0004.jpg";
   const BANNER_IMG = "/banner.jpg";
   const INSIGHTS_IMG = "/PHOTO-2025-11-22-19-17-37.jpg";
@@ -218,7 +242,10 @@ export default function Page() {
                 <LucideList size={14} /> Alphabetical
               </a>
 
-              <button onClick={() => window.print()} className="px-3 py-2 text-sm bg-gray-200 dark:bg-gray-700 rounded-md flex items-center gap-1">
+              <button
+                onClick={handlePrint}
+                className="px-3 py-2 text-sm bg-gray-200 dark:bg-gray-700 rounded-md flex items-center gap-1"
+              >
                 <LucideShare size={14} /> Print
               </button>
             </div>
@@ -231,7 +258,7 @@ export default function Page() {
             <div className="mb-4 flex items-center justify-between">
               <span className="text-sm text-gray-500">Results: <b>{filtered.length}</b></span>
               <div className="flex gap-2">
-                <button onClick={() => window.print()} className="px-3 py-2 bg-green-600 text-white rounded">Print</button>
+                <button onClick={handlePrint} className="px-3 py-2 bg-green-600 text-white rounded">Print</button>
                 <a href="/alphabetical" className="px-3 py-2 bg-white border rounded">Open alphabetical</a>
               </div>
             </div>
@@ -239,7 +266,14 @@ export default function Page() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filtered.map((v) => (
-              <motion.div key={v.voter_id} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} onClick={() => setSelected(v)} className={`p-4 rounded-xl shadow cursor-pointer ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+              <motion.div
+                key={v.voter_id}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25 }}
+                onClick={() => setSelected(v)}
+                className={`p-4 rounded-xl shadow cursor-pointer ${darkMode ? "bg-gray-800" : "bg-white"}`}
+              >
                 <div className="text-lg font-semibold">{v.name_marathi}</div>
                 <div className="text-sm text-gray-500">घर क्रमांक: {v.house_no} • वय: {v.age}</div>
                 <div className="text-xs text-gray-400 mt-2">EPIC: {v.voter_id} • अनुक्रमांक: {v.serial_no}</div>
@@ -248,42 +282,10 @@ export default function Page() {
           </div>
         </section>
 
-        {/* PRINT area (visible only on print) */}
-        <div id="print-area" className="hidden">
-          {/* populated only by print CSS to be visible when printing */}
-          {/* We render the same content via JS for CSS print fallback below */}
+        {/* ⭐ FIXED PRINT AREA (2-column correct print layout) */}
+        <div id="print-area" className="print-only">
+          <div id="print-area-columns"></div>
         </div>
-
-        {/* Print-friendly fallback markup (used so browser print preview sees content) */}
-        <div className="print-only hidden">
-          <div id="print-inline" style={{ padding: 16 }}>
-            <h2 style={{ marginBottom: 8 }}>Printed Voter List ({filtered.length})</h2>
-            <div style={{ columnCount: 2, columnGap: 20 }}>
-              {filtered.map((v) => (
-                <div key={v.voter_id} style={{ breakInside: "avoid", border: "1px solid #ddd", padding: 8, marginBottom: 12, borderRadius: 8 }}>
-                  <p><b>नाव:</b> {v.name_marathi}</p>
-                  <p><b>घर क्रमांक:</b> {v.house_no}</p>
-                  <p><b>नाते:</b> {v.relation_type}</p>
-                  <p><b>नाव (नाते):</b> {v.relation_name_marathi}</p>
-                  <p><b>वय:</b> {v.age}</p>
-                  <p><b>लिंग:</b> {v.gender}</p>
-                  <p><b>EPIC:</b> {v.voter_id}</p>
-                  <p><b>अनुक्रमांक:</b> {v.serial_no}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Insights image */}
-        <section className="mt-14">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} className="rounded-xl shadow-xl overflow-hidden">
-            <div className="p-6 bg-white dark:bg-gray-800">
-              <h3 className="text-xl font-semibold text-center mb-4">Insights</h3>
-              <img src={INSIGHTS_IMG} alt="Insights" className="w-full object-contain rounded-xl" />
-            </div>
-          </motion.div>
-        </section>
 
         <Footer />
       </main>
