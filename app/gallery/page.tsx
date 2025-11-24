@@ -1,54 +1,27 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
 
 export default function GalleryPage() {
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("voter_dark");
-    if (saved) setDarkMode(saved === "1");
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("voter_dark", darkMode ? "1" : "0");
-  }, [darkMode]);
-
-  // Auto-load your files gallery1.jpg ... gallery7.jpg
   const images = Array.from({ length: 7 }, (_, i) => `/gallery${i + 1}.jpg`);
 
   return (
-    <div
-      className={`min-h-screen px-4 py-10 transition-all ${
-        darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
-      }`}
-    >
-      {/* Header section */}
-      <div className="max-w-4xl mx-auto mb-10 flex justify-between items-center">
-        <h1 className="text-3xl md:text-4xl font-bold">Gallery</h1>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+      <Navbar />
 
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="px-4 py-2 rounded-xl bg-gray-300 dark:bg-gray-700"
-        >
-          {darkMode ? "Light" : "Dark"}
-        </button>
-      </div>
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        <h1 className="text-3xl font-bold mb-6 text-center">Gallery</h1>
 
-      {/* Masonry / Waterfall style layout */}
-      <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 max-w-5xl mx-auto">
-        {images.map((src, index) => (
-          <div
-            key={index}
-            className="mb-4 break-inside-avoid rounded-lg overflow-hidden shadow-lg hover:scale-[1.02] transition"
-          >
+        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+          {images.map((src, idx) => (
             <img
+              key={idx}
               src={src}
-              className="w-full object-cover rounded-lg"
-              alt={`Gallery ${index + 1}`}
+              alt={`Gallery ${idx + 1}`}
+              className="w-full mb-4 rounded-xl shadow-md hover:scale-[1.02] transition"
             />
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
