@@ -9,16 +9,16 @@ export default function GalleryPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
       <Navbar />
 
-      <div className="max-w-5xl mx-auto px-4 py-10">
+      <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 text-center">Gallery</h1>
 
-        <div className="grid grid-cols-1 gap-6">
-          {images.map((src, i) => (
+        <div className="flex flex-col gap-6">
+          {images.map((src, index) => (
             <img
-              key={i}
+              key={index}
               src={src}
-              alt={`Gallery ${i + 1}`}
-              className="w-full rounded-xl shadow-lg object-cover"
+              alt={`Gallery ${index + 1}`}
+              className="w-full rounded-xl shadow-md object-cover"
             />
           ))}
         </div>
