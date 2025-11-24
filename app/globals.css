@@ -43,16 +43,19 @@ body {
     box-sizing: border-box;
     background: #fff;
     color: #000;
-  }
 
-  /* two columns per page (good default) */
-  #print-inline > div, #print-area > div {
+    /* ⭐ FIXED — apply 2 columns directly */
     column-count: 2;
     column-gap: 18px;
   }
 
   /* avoid breaking inside cards */
-  .break-inside-avoid, .print-card { break-inside: avoid; -webkit-column-break-inside: avoid; page-break-inside: avoid; }
+  .break-inside-avoid,
+  .print-card {
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+  }
 
   /* simple card style for prints */
   .print-card {
@@ -64,18 +67,12 @@ body {
   }
 
   /* ensure images print at full width */
-  img { max-width: 100% !important; height: auto !important; }
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
 }
 
-/* Small utility visible only on screen (not in print) */
+/* screen-only utility */
 .print-only { display: none; }
 @media print { .print-only { display: block !important; } }
-
-/* If you want extra "glass-card" look in css, optionally add:
-.glass-card {
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(8px);
-  border-radius: 0.75rem;
-  border: 1px solid rgba(255,255,255,0.12);
-}
-*/
