@@ -24,17 +24,19 @@ body {
 .group .icon-box { transition: transform .18s ease; }
 .group:hover .icon-box { transform: translateY(-3px); }
 
-/* PRINT RULES (2-column default) */
+/* ---------------- PRINT RULES (fixed) ---------------- */
 @media print {
-  /* hide everything except our print-area markers */
-  body * { visibility: hidden !important; }
 
-  /* prefer #print-area, else fallback to #print-inline */
-  #print-area, #print-area * { visibility: visible !important; }
-  #print-inline, #print-inline * { visibility: visible !important; }
+  /* hide everything except print-area */
+  body * {
+    visibility: hidden !important;
+  }
 
-  /* layout for print */
-  #print-area, #print-inline {
+  #print-area, #print-area * {
+    visibility: visible !important;
+  }
+
+  #print-area {
     position: absolute;
     left: 0;
     top: 0;
@@ -43,35 +45,38 @@ body {
     box-sizing: border-box;
     background: #fff;
     color: #000;
+  }
 
-    /* ⭐ FIXED — apply 2 columns directly */
+  /* ONLY INSIDE PRINT — 2 COLUMN FORMAT */
+  #print-area-columns {
     column-count: 2;
     column-gap: 18px;
   }
 
-  /* avoid breaking inside cards */
-  .break-inside-avoid,
   .print-card {
     break-inside: avoid;
-    -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
-  }
+    -webkit-column-break-inside: avoid;
 
-  /* simple card style for prints */
-  .print-card {
     border: 1px solid #bbb;
     padding: 10px;
-    margin-bottom: 12px;
     border-radius: 6px;
+    margin-bottom: 12px;
     background: #fff;
   }
+}
 
-  /* ensure images print at full width */
-  img {
-    max-width: 100% !important;
-    height: auto !important;
+/* Hidden except during print */
+.print-only {
+  display: none;
+}
+
+@media print {
+  .print-only {
+    display: block !important;
   }
 }
+
 
 /* screen-only utility */
 .print-only { display: none; }
