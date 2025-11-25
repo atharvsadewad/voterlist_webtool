@@ -25,39 +25,6 @@ interface Voter {
   age: number;
   gender: string;
 }
-const ENG_TO_MARATHI: Record<string, string> = {
-  a: "अ", aa: "आ",
-  i: "इ", ii: "ई",
-  u: "उ", uu: "ऊ",
-  e: "ए", ai: "ऐ",
-  o: "ओ", au: "औ",
-  k: "क", kh: "ख", g: "ग", gh: "घ",
-  ch: "च", j: "ज",
-  t: "ट", th: "ठ", d: "ड", dh: "ढ", n: "न",
-  p: "प", ph: "फ", b: "ब", bh: "भ",
-  m: "म", y: "य", r: "र", l: "ल", v: "व",
-  s: "स", sh: "श", h: "ह",
-};
-function translitToMarathi(input: string): string {
-  let result = "";
-  let i = 0;
-
-  while (i < input.length) {
-    let two = input.slice(i, i + 2).toLowerCase();
-    let one = input[i].toLowerCase();
-
-    if (ENG_TO_MARATHI[two]) {
-      result += ENG_TO_MARATHI[two];
-      i += 2;
-    } else if (ENG_TO_MARATHI[one]) {
-      result += ENG_TO_MARATHI[one];
-      i += 1;
-    } else {
-      i += 1;
-    }
-  }
-  return result;
-}
 
 export default function Page() {
   const [darkMode, setDarkMode] = useState(false);
@@ -84,32 +51,21 @@ export default function Page() {
       .catch(() => setVoters([]));
   }, []);
 
-const handleSearch = () => {
-  if (!query.trim()) return setFiltered([]);
-
-  const q = query.toLowerCase();
-  const marathiGuess = translitToMarathi(q);
-
-  const res = voters.filter((v) => {
-    const name = (v.name_marathi || "").toLowerCase();
-    const rel = (v.relation_name_marathi || "").toLowerCase();
-    const id = (v.voter_id || "").toLowerCase();
-
-    return (
-      name.includes(q) ||               // Normal Marathi search
-      name.includes(marathiGuess) ||    // English → Marathi match
-      rel.includes(q) ||
-      rel.includes(marathiGuess) ||
-      id.includes(q)
+  const handleSearch = () => {
+    if (!query.trim()) return setFiltered([]);
+    const q = query.toLowerCase();
+    const res = voters.filter(
+      (v) =>
+        (v.name_marathi || "").toLowerCase().includes(q) ||
+        (v.relation_name_marathi || "").toLowerCase().includes(q) ||
+        (v.voter_id || "").toLowerCase().includes(q)
     );
-  });
+    setFiltered(res);
 
-  setFiltered(res);
-
-  setTimeout(() => {
-    document.getElementById("results")?.scrollIntoView({ behavior: "smooth" });
-  }, 150);
-};
+    setTimeout(() => {
+      document.getElementById("results")?.scrollIntoView({ behavior: "smooth" });
+    }, 150);
+  };
 
   // ⭐ FIXED PRINT FUNCTION (ONLY CHANGE)
   const handlePrint = () => {
