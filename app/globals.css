@@ -24,55 +24,66 @@ body {
 .group .icon-box { transition: transform .18s ease; }
 .group:hover .icon-box { transform: translateY(-3px); }
 
-/* PRINT RULES (2-column default) */
+/* ⭐ UPDATED PRINT RULES */
 @media print {
-  /* hide everything except our print-area markers */
-  body * { visibility: hidden !important; }
-
-  /* prefer #print-area, else fallback to #print-inline */
-  #print-area, #print-area * { visibility: visible !important; }
-  #print-inline, #print-inline * { visibility: visible !important; }
-
-  /* layout for print */
-  #print-area, #print-inline {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 18px;
-    box-sizing: border-box;
-    background: #fff;
-    color: #000;
-
-    /* ⭐ FIXED — apply 2 columns directly */
-    column-count: 2;
-    column-gap: 18px;
+  /* 1. Reset Page Margins */
+  @page {
+    margin: 1cm; /* standard margin */
+    size: auto;
   }
 
-  /* avoid breaking inside cards */
-  .break-inside-avoid,
+  /* 2. Basic Body Reset */
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* 3. Print Area Layout 
+     We don't need 'visibility: hidden' hacks anymore because
+     the main content is hidden via the 'print:hidden' class in JSX. 
+  */
+  #print-area {
+    display: block !important;
+    width: 100%;
+    
+    /* 2 Columns Layout */
+    column-count: 2;
+    column-gap: 20px;
+  }
+
+  #print-area-columns {
+    width: 100%;
+  }
+
+  /* 4. Card Styling */
   .print-card {
+    /* Prevent cards from being split across columns/pages */
     break-inside: avoid;
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
-  }
-
-  /* simple card style for prints */
-  .print-card {
-    border: 1px solid #bbb;
+    
+    border: 1px solid #000; /* Solid black border for clarity */
     padding: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
     border-radius: 6px;
     background: #fff;
+    font-size: 12px;
   }
 
-  /* ensure images print at full width */
-  img {
-    max-width: 100% !important;
-    height: auto !important;
+  /* Ensure text inside cards is legible */
+  .print-card .name {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  /* 5. Show elements marked as print-only */
+  .print-only {
+    display: block !important;
   }
 }
 
-/* screen-only utility */
+/* Screen-only utility */
 .print-only { display: none; }
-@media print { .print-only { display: block !important; } }
