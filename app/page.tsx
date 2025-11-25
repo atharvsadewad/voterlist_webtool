@@ -1,5 +1,5 @@
 "use client";
-
+import TranslitSearch from "../components/TranslitSearch";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -158,13 +158,17 @@ export default function Page() {
         <div id="search" className="sticky top-6 z-40 mt-4">
           <div className={`backdrop-blur-xl p-4 rounded-2xl shadow-lg border transition-all ${darkMode ? "bg-gray-800/60 border-gray-700" : "bg-white/80 border-gray-200"}`}>
             <div className="flex flex-col md:flex-row gap-3 items-stretch">
-              <input
-                className={`flex-1 p-3 rounded-xl outline-none focus:ring-2 transition ${darkMode ? "bg-gray-900 text-white focus:ring-blue-500" : "bg-white text-gray-800 focus:ring-blue-500"}`}
-                placeholder="Search नाव / आडनाव / EPIC…"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              />
+              <TranslitSearch
+  voters={voters}
+  onSearch={(results) => {
+    setFiltered(results);
+    setTimeout(
+      () => document.getElementById("results")?.scrollIntoView({ behavior: "smooth" }),
+      150
+    );
+  }}
+  placeholder="Search नाव / आडनाव / EPIC..."
+/>
 
               <div className="flex gap-2">
                 <button onClick={handleSearch} className="px-5 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700">Search</button>
