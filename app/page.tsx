@@ -30,7 +30,7 @@ export default function Page() {
   const [darkMode, setDarkMode] = useState(false);
   const [query, setQuery] = useState("");
   const [voters, setVoters] = useState<Voter[]>([]);
-  const [filtered, setFiltered] = useState<Voter[]>([]);
+  const [filtered, setFiltered] = useState<Partial<Voter>[]>([]);
   const [selected, setSelected] = useState<Voter | null>(null);
 
   // Restore Dark Mode
@@ -160,13 +160,13 @@ export default function Page() {
             <div className="flex flex-col md:flex-row gap-3 items-stretch">
               <TranslitSearch
   voters={voters}
-  onSearch={(results) => {
-    setFiltered(results);
-    setTimeout(
-      () => document.getElementById("results")?.scrollIntoView({ behavior: "smooth" }),
-      150
-    );
-  }}
+ onSearch={(results) => {
+  setFiltered(results as Partial<Voter>[]);
+  setTimeout(
+    () => document.getElementById("results")?.scrollIntoView({ behavior: "smooth" }),
+    150
+  );
+}}
   placeholder="Search नाव / आडनाव / EPIC..."
 />
 
