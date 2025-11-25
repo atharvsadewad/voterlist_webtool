@@ -1,5 +1,5 @@
 "use client";
-import TranslitSearch from "../components/TranslitSearch";
+
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -25,12 +25,45 @@ interface Voter {
   age: number;
   gender: string;
 }
+const ENG_TO_MARATHI: Record<string, string> = {
+  a: "अ", aa: "आ",
+  i: "इ", ii: "ई",
+  u: "उ", uu: "ऊ",
+  e: "ए", ai: "ऐ",
+  o: "ओ", au: "औ",
+  k: "क", kh: "ख", g: "ग", gh: "घ",
+  ch: "च", j: "ज",
+  t: "ट", th: "ठ", d: "ड", dh: "ढ", n: "न",
+  p: "प", ph: "फ", b: "ब", bh: "भ",
+  m: "म", y: "य", r: "र", l: "ल", v: "व",
+  s: "स", sh: "श", h: "ह",
+};
+function translitToMarathi(input: string): string {
+  let result = "";
+  let i = 0;
+
+  while (i < input.length) {
+    let two = input.slice(i, i + 2).toLowerCase();
+    let one = input[i].toLowerCase();
+
+    if (ENG_TO_MARATHI[two]) {
+      result += ENG_TO_MARATHI[two];
+      i += 2;
+    } else if (ENG_TO_MARATHI[one]) {
+      result += ENG_TO_MARATHI[one];
+      i += 1;
+    } else {
+      i += 1;
+    }
+  }
+  return result;
+}
 
 export default function Page() {
   const [darkMode, setDarkMode] = useState(false);
   const [query, setQuery] = useState("");
   const [voters, setVoters] = useState<Voter[]>([]);
-  const [filtered, setFiltered] = useState<Partial<Voter>[]>([]);
+  const [filtered, setFiltered] = useState<Voter[]>([]);
   const [selected, setSelected] = useState<Voter | null>(null);
 
   // Restore Dark Mode
@@ -51,21 +84,32 @@ export default function Page() {
       .catch(() => setVoters([]));
   }, []);
 
-  const handleSearch = () => {
-    if (!query.trim()) return setFiltered([]);
-    const q = query.toLowerCase();
-    const res = voters.filter(
-      (v) =>
-        (v.name_marathi || "").toLowerCase().includes(q) ||
-        (v.relation_name_marathi || "").toLowerCase().includes(q) ||
-        (v.voter_id || "").toLowerCase().includes(q)
-    );
-    setFiltered(res);
+const handleSearch = () => {
+  if (!query.trim()) return setFiltered([]);
 
-    setTimeout(() => {
-      document.getElementById("results")?.scrollIntoView({ behavior: "smooth" });
-    }, 150);
-  };
+  const q = query.toLowerCase();
+  const marathiGuess = translitToMarathi(q);
+
+  const res = voters.filter((v) => {
+    const name = (v.name_marathi || "").toLowerCase();
+    const rel = (v.relation_name_marathi || "").toLowerCase();
+    const id = (v.voter_id || "").toLowerCase();
+
+    return (
+      name.includes(q) ||               // Normal Marathi search
+      name.includes(marathiGuess) ||    // English → Marathi match
+      rel.includes(q) ||
+      rel.includes(marathiGuess) ||
+      id.includes(q)
+    );
+  });
+
+  setFiltered(res);
+
+  setTimeout(() => {
+    document.getElementById("results")?.scrollIntoView({ behavior: "smooth" });
+  }, 150);
+};
 
   // ⭐ FIXED PRINT FUNCTION (ONLY CHANGE)
   const handlePrint = () => {
@@ -158,17 +202,13 @@ export default function Page() {
         <div id="search" className="sticky top-6 z-40 mt-4">
           <div className={`backdrop-blur-xl p-4 rounded-2xl shadow-lg border transition-all ${darkMode ? "bg-gray-800/60 border-gray-700" : "bg-white/80 border-gray-200"}`}>
             <div className="flex flex-col md:flex-row gap-3 items-stretch">
-              <TranslitSearch
-  voters={voters}
- onSearch={(results) => {
-  setFiltered(results as Partial<Voter>[]);
-  setTimeout(
-    () => document.getElementById("results")?.scrollIntoView({ behavior: "smooth" }),
-    150
-  );
-}}
-  placeholder="Search नाव / आडनाव / EPIC..."
-/>
+              <input
+                className={`flex-1 p-3 rounded-xl outline-none focus:ring-2 transition ${darkMode ? "bg-gray-900 text-white focus:ring-blue-500" : "bg-white text-gray-800 focus:ring-blue-500"}`}
+                placeholder="Search नाव / आडनाव / EPIC…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              />
 
               <div className="flex gap-2">
                 <button onClick={handleSearch} className="px-5 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700">Search</button>
