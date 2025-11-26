@@ -41,12 +41,12 @@ export default function BoothWisePage() {
   }, []);
 
   // Booth Slicing Logic
-  const boothRanges = {
-    1: { start: 1, end: 944 },
-    2: { start: 945, end: 1923 },
-    3: { start: 1924, end: 2881 },
-    4: { start: 2882, end: 3826 },
-  };
+const boothRanges: Record<number, { start: number; end: number }> = {
+  1: { start: 1, end: 944 },
+  2: { start: 945, end: 1923 },
+  3: { start: 1924, end: 2881 },
+  4: { start: 2882, end: 3826 },
+};
 
   const loadBooth = (booth: number) => {
     const { start, end } = boothRanges[booth];
