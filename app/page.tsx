@@ -193,6 +193,17 @@ export default function Page() {
                 <div className="font-semibold">Alphabetical</div>
                 <div className="text-xs text-gray-500">Browse voters A → ज्ञ</div>
               </a>
+  
+ <a
+  href="/booth"
+  className="group bg-white dark:bg-gray-800 rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col gap-3"
+>
+  <div className="p-2 bg-red-50 rounded-md">
+    <LucideList size={22} className="text-red-600" />
+  </div>
+  <div className="font-semibold">Booth-wise List</div>
+  <div className="text-xs text-gray-500">View voters by booth</div>
+</a>
 
               <a href="/gallery" className="group bg-white dark:bg-gray-800 rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col gap-3">
                 <div className="p-2 bg-indigo-50 rounded-md"><LucideImage size={22} className="text-indigo-600" /></div>
