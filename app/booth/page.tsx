@@ -13,15 +13,19 @@ interface Voter {
   house_no: string;
   age: number;
   gender: string;
+
+  // Added to fix TypeScript errors
+  booth?: number;
+  boothSerial?: number;
 }
 
 export default function BoothWisePage() {
   const [voters, setVoters] = useState<Voter[]>([]);
   const [filtered, setFiltered] = useState<Voter[]>([]);
   const [selectedBooth, setSelectedBooth] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
   const [modalVoter, setModalVoter] = useState<Voter | null>(null);
   const [darkMode, setDarkMode] = useState(false);
-  const [query, setQuery] = useState("");
 
   // Restore Dark Mode
   useEffect(() => {
@@ -33,7 +37,7 @@ export default function BoothWisePage() {
     localStorage.setItem("voter_dark", darkMode ? "1" : "0");
   }, [darkMode]);
 
-  // Load All Voters
+  // Load Voter Data
   useEffect(() => {
     fetch(`/voters.json?t=${Date.now()}`)
       .then((r) => r.json())
@@ -41,7 +45,7 @@ export default function BoothWisePage() {
       .catch(() => setVoters([]));
   }, []);
 
-  // Booth Slicing Logic
+  // Booth ranges
   const boothRanges: Record<number, { start: number; end: number }> = {
     1: { start: 1, end: 944 },
     2: { start: 945, end: 1923 },
@@ -49,20 +53,20 @@ export default function BoothWisePage() {
     4: { start: 2882, end: 3826 },
   };
 
-  const getBoothNumber = (serial: number) => {
-    for (const booth in boothRanges) {
-      const { start, end } = boothRanges[Number(booth)];
-      if (serial >= start && serial <= end) return Number(booth);
-    }
-    return null;
+  const getBoothNumber = (serial: number): number => {
+    if (serial <= 944) return 1;
+    if (serial <= 1923) return 2;
+    if (serial <= 2881) return 3;
+    return 4;
   };
 
-  const getBoothWiseSerial = (serial: number) => {
+  const getBoothWiseSerial = (serial: number): number => {
     const booth = getBoothNumber(serial);
-    if (!booth) return null;
-    return serial - boothRanges[booth].start + 1;
+    const { start } = boothRanges[booth];
+    return serial - start + 1;
   };
 
+  // Load Selected Booth
   const loadBooth = (booth: number) => {
     const { start, end } = boothRanges[booth];
 
@@ -72,50 +76,41 @@ export default function BoothWisePage() {
 
     const renumbered = sliced.map((v, index) => ({
       ...v,
-      serial_no: index + 1,
+      booth,
+      boothSerial: index + 1,
     }));
 
     setSelectedBooth(booth);
     setFiltered(renumbered);
-
-    setTimeout(() => {
-      document.getElementById("results")?.scrollIntoView({
-        behavior: "smooth",
-      });
-    }, 150);
   };
 
-  // 🔍 NEW: GLOBAL SEARCH ACROSS ALL VOTERS
+  // Search inside current booth
   const handleSearch = () => {
-    if (!query.trim()) return setFiltered([]);
+    if (!selectedBooth) return;
 
-    const q = query.toLowerCase();
+    const q = search.trim().toLowerCase();
+    if (!q) {
+      loadBooth(selectedBooth);
+      return;
+    }
 
-    const results = voters.filter(
-      (v) =>
-        v.name_marathi.toLowerCase().includes(q) ||
-        v.relation_name_marathi.toLowerCase().includes(q) ||
-        v.voter_id.toLowerCase().includes(q)
-    );
+    const boothList = filtered.length > 0 ? filtered : voters;
 
-    // Add booth & booth-serial info
-    const enhanced = results.map((v) => {
-      const booth = getBoothNumber(v.serial_no);
-      const boothSerial = getBoothWiseSerial(v.serial_no);
-      return { ...v, booth, boothSerial };
+    const results = boothList.filter((v) => {
+      const name = (v.name_marathi || "").toLowerCase();
+      const rel = (v.relation_name_marathi || "").toLowerCase();
+      const id = (v.voter_id || "").toLowerCase();
+      return (
+        name.includes(q) ||
+        rel.includes(q) ||
+        id.includes(q)
+      );
     });
 
-    setSelectedBooth(null); // we're in GLOBAL search mode now
-    setFiltered(enhanced);
-
-    setTimeout(() => {
-      document.getElementById("results")?.scrollIntoView({
-        behavior: "smooth",
-      });
-    }, 150);
+    setFiltered(results);
   };
 
-  // PRINT LOGIC
+  // PRINT HANDLER
   const handlePrint = () => {
     const area = document.getElementById("print-area-columns");
     if (!area) return;
@@ -140,7 +135,7 @@ export default function BoothWisePage() {
 
   return (
     <>
-      {/* Screen UI (hidden during print) */}
+      {/* SCREEN UI (HIDDEN DURING PRINT) */}
       <div
         className={`print:hidden min-h-screen transition-all ${
           darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"
@@ -149,11 +144,12 @@ export default function BoothWisePage() {
         <Navbar />
 
         <div className="max-w-6xl mx-auto px-4 py-8">
+
           <h1 className="text-3xl font-bold text-center mb-6">
             Booth Wise Voter List
           </h1>
 
-          {/* 🌙 Dark Mode Toggle */}
+          {/* Mode Toggle */}
           <div className="text-center mb-6">
             <button
               onClick={() => setDarkMode(!darkMode)}
@@ -163,30 +159,26 @@ export default function BoothWisePage() {
             </button>
           </div>
 
-          {/* 🔍 GLOBAL SEARCH BAR */}
-          <div className="max-w-md mx-auto mb-6">
-            <div className="flex gap-2">
+          {/* SEARCH BAR */}
+          {selectedBooth && (
+            <div className="max-w-md mx-auto mb-6">
               <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                placeholder="Search name / EPIC / relation..."
-                className={`w-full p-3 rounded-xl border ${
-                  darkMode
-                    ? "bg-gray-800 text-white border-gray-700"
-                    : "bg-white text-gray-900 border-gray-300"
-                }`}
+                placeholder={`Search inside Booth ${selectedBooth}...`}
+                className="w-full p-3 rounded-xl border bg-white text-gray-800"
               />
               <button
                 onClick={handleSearch}
-                className="px-4 py-3 rounded-xl bg-blue-600 text-white"
+                className="mt-2 w-full py-3 bg-blue-600 text-white rounded-xl"
               >
                 Search
               </button>
             </div>
-          </div>
+          )}
 
-          {/* Booth Selection */}
+          {/* Booth selection */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[1, 2, 3, 4].map((booth) => (
               <button
@@ -207,12 +199,12 @@ export default function BoothWisePage() {
 
           {selectedBooth && (
             <div className="text-gray-600 mb-3">
-              Showing <b>{filtered.length}</b> voters from{" "}
-              <b>Booth {selectedBooth}</b>
+              Showing <b>{filtered.length}</b> voters from Booth{" "}
+              <b>{selectedBooth}</b>
             </div>
           )}
 
-          {/* Print Button */}
+          {/* Print button */}
           {filtered.length > 0 && (
             <div className="text-right mb-4 print:hidden">
               <button
@@ -224,14 +216,14 @@ export default function BoothWisePage() {
             </div>
           )}
 
-          {/* RESULTS */}
+          {/* VOTER CARDS */}
           <section
             id="results"
             className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-10"
           >
             {filtered.map((v) => (
               <div
-                key={v.voter_id + "-" + v.serial_no}
+                key={v.voter_id}
                 onClick={() => setModalVoter(v)}
                 className={`p-4 rounded-xl shadow cursor-pointer ${
                   darkMode ? "bg-gray-800" : "bg-white"
@@ -241,35 +233,27 @@ export default function BoothWisePage() {
                 <div className="text-sm text-gray-500">
                   घर क्रमांक: {v.house_no} • वय: {v.age}
                 </div>
-
-                {/* NEW DETAILS */}
-                <div className="text-xs text-gray-400 mt-1">
-                  Booth: <b>{v.booth ?? getBoothNumber(v.serial_no)}</b> • Booth Sr:{" "}
-                  <b>{v.boothSerial ?? getBoothWiseSerial(v.serial_no)}</b>
-                </div>
-
-                <div className="text-xs text-gray-400 mt-1">
+                <div className="text-xs text-gray-400 mt-2">
                   EPIC: {v.voter_id} • अनुक्रमांक: {v.serial_no}
                 </div>
               </div>
             ))}
           </section>
-        </div>
 
-        <Modal
-          isOpen={!!modalVoter}
-          onClose={() => setModalVoter(null)}
-          voter={modalVoter}
-          darkMode={darkMode}
-        />
+          <Modal
+            isOpen={!!modalVoter}
+            onClose={() => setModalVoter(null)}
+            voter={modalVoter}
+            darkMode={darkMode}
+          />
+        </div>
       </div>
 
       {/* PRINT AREA */}
       <div id="print-area" className="print-only" style={{ padding: 20 }}>
         <h2 className="text-xl mb-4">
-          Printed Booth List ({filtered.length})
+          Printed Booth List ({filtered.length}) — Booth {selectedBooth}
         </h2>
-
         <div id="print-area-columns"></div>
       </div>
     </>
