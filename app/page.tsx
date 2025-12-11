@@ -92,7 +92,7 @@ export default function Page() {
   };
 
   // Images
-  const HERO_IMG = "/IMG-20251123-WA0004.jpg";
+  const HERO_IMG = "/IMG-20251123-WA0004.jpg?v=2";
   const BANNER_IMG = "/banner.jpg";
   const INSIGHTS_IMG = "/PHOTO-2025-11-22-19-17-37.jpg";
   const SNAPSHOT_IMG = "/snapshot-ward16.png";
