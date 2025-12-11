@@ -13,43 +13,24 @@ interface Voter {
   house_no: string;
   age: number;
   gender: string;
-}
-
-// Booth Ranges
-const boothRanges = [
-  { booth: 1, start: 1, end: 944 },
-  { booth: 2, start: 945, end: 1923 },
-  { booth: 3, start: 1924, end: 2881 },
-  { booth: 4, start: 2882, end: 3826 },
-];
-
-function getBoothNumber(serial: number) {
-  const found = boothRanges.find(
-    (b) => serial >= b.start && serial <= b.end
-  );
-  return found ? found.booth : null;
-}
-
-function getBoothWiseSerial(serial: number) {
-  const booth = boothRanges.find(
-    (b) => serial >= b.start && serial <= b.end
-  );
-  return booth ? serial - booth.start + 1 : null;
+  booth?: number;
+  boothSerial?: number;
 }
 
 export default function BoothWisePage() {
   const [voters, setVoters] = useState<Voter[]>([]);
-  const [filtered, setFiltered] = useState<any[]>([]);
+  const [filtered, setFiltered] = useState<Voter[]>([]);
   const [selectedBooth, setSelectedBooth] = useState<number | null>(null);
-  const [modalVoter, setModalVoter] = useState<any | null>(null);
+  const [modalVoter, setModalVoter] = useState<Voter | null>(null);
   const [darkMode, setDarkMode] = useState(false);
-  const [search, setSearch] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Restore Dark Mode
   useEffect(() => {
     const saved = localStorage.getItem("voter_dark");
     if (saved) setDarkMode(saved === "1");
   }, []);
+
   useEffect(() => {
     localStorage.setItem("voter_dark", darkMode ? "1" : "0");
   }, [darkMode]);
@@ -58,27 +39,76 @@ export default function BoothWisePage() {
   useEffect(() => {
     fetch(`/voters.json?t=${Date.now()}`)
       .then((r) => r.json())
-      .then(setVoters)
+      .then((data) => setVoters(data))
       .catch(() => setVoters([]));
   }, []);
 
-  // ------------------------------
-  // 🔍 GLOBAL SEARCH ACROSS ALL VOTERS
-  // ------------------------------
+  // Booth Ranges
+  const boothRanges: Record<number, { start: number; end: number }> = {
+    1: { start: 1, end: 944 },
+    2: { start: 945, end: 1923 },
+    3: { start: 1924, end: 2881 },
+    4: { start: 2882, end: 3826 },
+  };
+
+  // Helper — Get booth number from original serial number
+  const getBoothNumber = (serial: number): number => {
+    if (serial >= 1 && serial <= 944) return 1;
+    if (serial >= 945 && serial <= 1923) return 2;
+    if (serial >= 1924 && serial <= 2881) return 3;
+    if (serial >= 2882 && serial <= 3826) return 4;
+    return 0;
+  };
+
+  // Helper — compute booth-wise serial number
+  const getBoothWiseSerial = (serial: number): number => {
+    const booth = getBoothNumber(serial);
+    const range = boothRanges[booth];
+    return serial - range.start + 1;
+  };
+
+  // Load voters for selected booth
+  const loadBooth = (booth: number) => {
+    setSearchQuery(""); // reset search within booth
+
+    const { start, end } = boothRanges[booth];
+
+    const sliced = voters.filter(
+      (v) => v.serial_no >= start && v.serial_no <= end
+    );
+
+    const renumbered = sliced.map((v, index) => ({
+      ...v,
+      booth: booth,
+      boothSerial: index + 1,
+      serial_no: index + 1,
+    }));
+
+    setSelectedBooth(booth);
+    setFiltered(renumbered);
+
+    setTimeout(() => {
+      document.getElementById("results")?.scrollIntoView({
+        behavior: "smooth",
+      });
+    }, 150);
+  };
+
+  // 🔍 Search across ALL voters (not only the booth list)
   const handleSearch = () => {
-    if (!search.trim()) {
-      setFiltered([]);
+    if (!searchQuery.trim()) {
+      if (selectedBooth) loadBooth(selectedBooth);
       return;
     }
 
-    const q = search.toLowerCase();
+    const q = searchQuery.toLowerCase();
 
     const results = voters
       .filter(
         (v) =>
-          (v.name_marathi || "").toLowerCase().includes(q) ||
-          (v.relation_name_marathi || "").toLowerCase().includes(q) ||
-          (v.voter_id || "").toLowerCase().includes(q)
+          v.name_marathi.toLowerCase().includes(q) ||
+          v.relation_name_marathi.toLowerCase().includes(q) ||
+          v.voter_id.toLowerCase().includes(q)
       )
       .map((v) => ({
         ...v,
@@ -86,38 +116,17 @@ export default function BoothWisePage() {
         boothSerial: getBoothWiseSerial(v.serial_no),
       }));
 
-    setSelectedBooth(null); // Clear booth view
+    setSelectedBooth(null); // switch to search mode
     setFiltered(results);
-  };
 
-  // --------------------------------
-  // BOOTH-WISE LOADING (BROWSING MODE)
-  // --------------------------------
-  const loadBooth = (booth: number) => {
-    const range = boothRanges.find((b) => b.booth === booth);
-    if (!range) return;
-
-    const sliced = voters.filter(
-      (v) => v.serial_no >= range.start && v.serial_no <= range.end
+    setTimeout(
+      () => document.getElementById("results")?.scrollIntoView({ behavior: "smooth" }),
+      150
     );
-
-    const renumbered = sliced.map((v, index) => ({
-      ...v,
-      booth,
-      boothSerial: index + 1,
-    }));
-
-    setSearch(""); // clear search
-    setFiltered(renumbered);
-    setSelectedBooth(booth);
   };
 
-  // ---------------------
-  // 🔶 PRINT LOGIC
-  // ---------------------
+  // PRINT HANDLER
   const handlePrint = () => {
-    if (!selectedBooth) return alert("Select a booth first");
-
     const area = document.getElementById("print-area-columns");
     if (!area) return;
 
@@ -141,6 +150,7 @@ export default function BoothWisePage() {
 
   return (
     <>
+      {/* UI (Hidden During Print) */}
       <div
         className={`print:hidden min-h-screen transition-all ${
           darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"
@@ -149,11 +159,12 @@ export default function BoothWisePage() {
         <Navbar />
 
         <div className="max-w-6xl mx-auto px-4 py-8">
+
           <h1 className="text-3xl font-bold text-center mb-6">
             Booth Wise Voter List
           </h1>
 
-          {/* 🌙 Dark Mode */}
+          {/* Dark Mode Toggle */}
           <div className="text-center mb-6">
             <button
               onClick={() => setDarkMode(!darkMode)}
@@ -163,25 +174,25 @@ export default function BoothWisePage() {
             </button>
           </div>
 
-          {/* 🔍 GLOBAL SEARCH BAR */}
-          <div className="mb-6 flex gap-3">
+          {/* 🔍 Search Box */}
+          <div className="max-w-md mx-auto mb-6">
             <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              placeholder="Search नाव / आडनाव / EPIC…"
-              className="flex-1 p-3 rounded-lg border"
+              className="w-full p-3 rounded-lg border"
+              placeholder="Search voter by name / EPIC…"
             />
             <button
               onClick={handleSearch}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+              className="mt-2 w-full p-3 bg-blue-600 text-white rounded-lg"
             >
               Search
             </button>
           </div>
 
-          {/* 📌 Booth Buttons */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {/* Booth Selection */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[1, 2, 3, 4].map((booth) => (
               <button
                 key={booth}
@@ -199,19 +210,31 @@ export default function BoothWisePage() {
             ))}
           </div>
 
-          {/* 🔶 Print Button (Only for booth view) */}
-          {selectedBooth && filtered.length > 0 && (
-            <div className="text-right mb-4">
+          {/* Showing count */}
+          {filtered.length > 0 && (
+            <div className="text-gray-600 mb-3">
+              Showing <b>{filtered.length}</b>{" "}
+              {selectedBooth ? (
+                <>voters from <b>Booth {selectedBooth}</b></>
+              ) : (
+                "search results"
+              )}
+            </div>
+          )}
+
+          {/* Print Button */}
+          {filtered.length > 0 && (
+            <div className="text-right mb-4 print:hidden">
               <button
                 onClick={handlePrint}
                 className="px-4 py-2 bg-orange-600 text-white rounded-lg shadow"
               >
-                Print Booth List
+                Print List
               </button>
             </div>
           )}
 
-          {/* RESULTS */}
+          {/* Voter Cards */}
           <section
             id="results"
             className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-10"
@@ -219,14 +242,20 @@ export default function BoothWisePage() {
             {filtered.map((v) => (
               <div
                 key={v.voter_id + "-" + v.serial_no}
-                onClick={() => setModalVoter(v)}
                 className={`p-4 rounded-xl shadow cursor-pointer ${
                   darkMode ? "bg-gray-800" : "bg-white"
                 }`}
+                onClick={() =>
+                  setModalVoter({
+                    ...v,
+                    serial_no: v.boothSerial || v.serial_no, // FIXED
+                  })
+                }
               >
                 <div className="text-lg font-semibold">{v.name_marathi}</div>
                 <div className="text-sm text-gray-500">
-                  Booth: {v.booth} • Sr: {v.boothSerial}
+                  Booth: {v.booth} • Booth Sr:{" "}
+                  {v.boothSerial ?? getBoothWiseSerial(v.serial_no)}
                 </div>
                 <div className="text-xs text-gray-400 mt-2">
                   EPIC: {v.voter_id}
@@ -247,8 +276,9 @@ export default function BoothWisePage() {
       {/* PRINT AREA */}
       <div id="print-area" className="print-only" style={{ padding: 20 }}>
         <h2 className="text-xl mb-4">
-          Booth {selectedBooth} — Printed List ({filtered.length})
+          Printed List ({filtered.length})
         </h2>
+
         <div id="print-area-columns"></div>
       </div>
     </>
