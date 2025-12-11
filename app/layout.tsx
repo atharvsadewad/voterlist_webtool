@@ -13,8 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ward 16 (B) — Voter Search",
-  description: "Official voter search tool for Ward 16 (B)",
+  title: "Ward-16 Voters — Voter Search",
+  description: "Voter search tool for Ward 16 (B)",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icons/icon-192.png",
+    apple: "/icons/icon-192.png",
+  },
+  themeColor: "#2563eb",
 };
 
 export default function RootLayout({
@@ -24,11 +30,31 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* PWA iOS support */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Ward-16 Voters" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+      </head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900`}
       >
-        {/* Each page will control its own navbar */}
         {children}
+
+        {/* REGISTER SERVICE WORKER */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                  navigator.serviceWorker.register('/sw.js')
+                  .catch(err => console.log('SW registration failed:', err));
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );
