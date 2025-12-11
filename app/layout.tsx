@@ -31,27 +31,31 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        {/* PWA Manifest */}
-        <link rel="manifest" href="/manifest.json" />
+     <head>
+  {/* Manifest (version bump forces refresh) */}
+  <link rel="manifest" href="/manifest.json?v=3" />
 
-        {/* FAVICONS */}
-        <link rel="icon" href="/icons/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png" />
-        <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+  {/* Standard Favicons */}
+  <link rel="icon" href="/icons/favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png" />
 
-        {/* PWA ICONS */}
-        <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
-        <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
+  {/* PWA Icons (Android WebAPK uses ONLY these two) */}
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/app-icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/app-icon-512.png" />
 
-        {/* APPLE TOUCH ICON */}
-        <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+  {/* Apple iOS Icon */}
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
 
-        {/* iOS PWA Settings */}
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="Ward-16 Voters" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-      </head>
+  {/* iOS PWA Behaviour */}
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Ward-16 Voters" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  {/* Theme Color */}
+  <meta name="theme-color" content="#2563eb" />
+</head>
+
 
       <body>
         {children}
