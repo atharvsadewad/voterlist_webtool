@@ -22,6 +22,10 @@ export default function BoothWisePage() {
   const [modalVoter, setModalVoter] = useState<Voter | null>(null);
   const [darkMode, setDarkMode] = useState(false);
 
+  // 🔍 NEW: Search states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Voter[]>([]);
+
   // Restore Dark Mode
   useEffect(() => {
     const saved = localStorage.getItem("voter_dark");
@@ -55,7 +59,6 @@ export default function BoothWisePage() {
       (v) => v.serial_no >= start && v.serial_no <= end
     );
 
-    // Renumber serials starting from 1
     const renumbered = sliced.map((v, index) => ({
       ...v,
       serial_no: index + 1,
@@ -63,9 +66,36 @@ export default function BoothWisePage() {
 
     setSelectedBooth(booth);
     setFiltered(renumbered);
+    setSearchQuery("");
+    setSearchResults([]);
 
     setTimeout(() => {
       document.getElementById("results")?.scrollIntoView({
+        behavior: "smooth",
+      });
+    }, 150);
+  };
+
+  // 🔍 NEW: Search inside selected booth only
+  const handleSearch = () => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    const q = searchQuery.toLowerCase();
+
+    const results = filtered.filter(
+      (v) =>
+        (v.name_marathi || "").toLowerCase().includes(q) ||
+        (v.relation_name_marathi || "").toLowerCase().includes(q) ||
+        (v.voter_id || "").toLowerCase().includes(q)
+    );
+
+    setSearchResults(results);
+
+    setTimeout(() => {
+      document.getElementById("search-results")?.scrollIntoView({
         behavior: "smooth",
       });
     }, 150);
@@ -94,7 +124,7 @@ export default function BoothWisePage() {
 
   return (
     <>
-      {/* Screen UI (hidden during print) */}
+      {/* SCREEN UI */}
       <div
         className={`print:hidden min-h-screen transition-all ${
           darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"
@@ -117,7 +147,30 @@ export default function BoothWisePage() {
             </button>
           </div>
 
-          {/* Booth Selection Buttons */}
+          {/* NEW — Search Bar */}
+          {selectedBooth && (
+            <div className="max-w-md mx-auto mb-6">
+              <input
+                type="text"
+                placeholder={`Search inside Booth ${selectedBooth}…`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                className={`w-full p-3 rounded-lg border shadow ${
+                  darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+                }`}
+              />
+
+              <button
+                onClick={handleSearch}
+                className="w-full mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg shadow"
+              >
+                Search
+              </button>
+            </div>
+          )}
+
+          {/* Booth Buttons */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[1, 2, 3, 4].map((booth) => (
               <button
@@ -136,14 +189,15 @@ export default function BoothWisePage() {
             ))}
           </div>
 
+          {/* Selected booth info */}
           {selectedBooth && (
             <div className="text-gray-600 mb-3">
-              Showing <b>{filtered.length}</b> voters from{" "}
-              <b>Booth {selectedBooth}</b>
+              Showing <b>{filtered.length}</b> voters from Booth{" "}
+              <b>{selectedBooth}</b>
             </div>
           )}
 
-          {/* Print Button */}
+          {/* PRINT BUTTON */}
           {filtered.length > 0 && (
             <div className="text-right mb-4 print:hidden">
               <button
@@ -155,7 +209,38 @@ export default function BoothWisePage() {
             </div>
           )}
 
-          {/* Voter Cards */}
+          {/* 🔎 SEARCH RESULTS SECTION */}
+          {searchResults.length > 0 && (
+            <div id="search-results" className="mb-10">
+              <h2 className="text-xl font-semibold mb-3">
+                Search Results in Booth {selectedBooth} ({searchResults.length})
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {searchResults.map((v) => (
+                  <div
+                    key={v.voter_id}
+                    className={`p-4 rounded-xl shadow cursor-pointer ${
+                      darkMode ? "bg-gray-800" : "bg-white"
+                    }`}
+                    onClick={() => setModalVoter(v)}
+                  >
+                    <div className="text-lg font-semibold">
+                      {v.name_marathi}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      घर क्रमांक: {v.house_no} • वय: {v.age}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-2">
+                      EPIC: {v.voter_id} • अनुक्रमांक: {v.serial_no}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Normal Booth Result Cards */}
           <section
             id="results"
             className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-10"
@@ -188,12 +273,11 @@ export default function BoothWisePage() {
         />
       </div>
 
-      {/* PRINT AREA (same as Home Page logic) */}
+      {/* PRINT AREA */}
       <div id="print-area" className="print-only" style={{ padding: 20 }}>
         <h2 className="text-xl mb-4">
           Printed Booth List ({filtered.length}) — Booth {selectedBooth}
         </h2>
-
         <div id="print-area-columns"></div>
       </div>
     </>
