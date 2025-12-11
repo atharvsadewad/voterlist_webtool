@@ -42,6 +42,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900`}
       >
         {children}
+        <InstallPrompt />
 
         {/* REGISTER SERVICE WORKER */}
         <script
