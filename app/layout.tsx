@@ -32,31 +32,37 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* REQUIRED FIX — Replace old Vercel favicon */}
-        <link rel="icon" href="/icons/icon-192.png" sizes="192x192" />
-        <link rel="icon" href="/icons/icon-512.png" sizes="512x512" />
+        {/* PWA Manifest */}
+        <link rel="manifest" href="/manifest.json" />
 
-        {/* PWA iOS support */}
+        {/* FAVICONS */}
+        <link rel="icon" href="/icons/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png" />
+        <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+
+        {/* PWA ICONS */}
+        <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
+
+        {/* APPLE TOUCH ICON */}
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+
+        {/* iOS PWA Settings */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="Ward-16 Voters" />
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
 
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900`}
-      >
+      <body>
         {children}
+        {/* install prompt + SW register */}
         <InstallPrompt />
-
-        {/* Register service worker */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js')
-                    .catch(err => console.log('SW registration failed:', err));
-                });
+                navigator.serviceWorker.register('/sw.js')
+                  .catch(err => console.log('SW registration failed:', err));
               }
             `,
           }}
@@ -65,3 +71,4 @@ export default function RootLayout({
     </html>
   );
 }
+
