@@ -32,6 +32,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* REQUIRED FIX — Replace old Vercel favicon */}
+        <link rel="icon" href="/icons/icon-192.png" sizes="192x192" />
+        <link rel="icon" href="/icons/icon-512.png" sizes="512x512" />
+
         {/* PWA iOS support */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="Ward-16 Voters" />
@@ -44,14 +48,14 @@ export default function RootLayout({
         {children}
         <InstallPrompt />
 
-        {/* REGISTER SERVICE WORKER */}
+        {/* Register service worker */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                   navigator.serviceWorker.register('/sw.js')
-                  .catch(err => console.log('SW registration failed:', err));
+                    .catch(err => console.log('SW registration failed:', err));
                 });
               }
             `,
