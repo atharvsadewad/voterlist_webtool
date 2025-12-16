@@ -189,12 +189,12 @@ export default function Page() {
 
           {/* Quick Actions */}
           <section className="mt-8">
-            <h2 className="text-xl font-semibold mb-3">Quick Actions</h2>
+            <h2 className="text-xl font-semibold mb-3 dark:text-white">Quick Actions</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <a href="/alphabetical" className="group bg-white dark:bg-gray-800 rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col gap-3">
                 <div className="p-2 bg-orange-50 rounded-md"><LucideList size={22} className="text-orange-600" /></div>
-                <div className="font-semibold">Alphabetical</div>
-                <div className="text-xs text-gray-500">Browse voters A → ज्ञ</div>
+                <div className="font-semibold dark:text-gray-200">Alphabetical</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Browse voters A → ज्ञ</div>
               </a>
   
  <a
@@ -204,26 +204,26 @@ export default function Page() {
   <div className="p-2 bg-red-50 rounded-md">
     <LucideList size={22} className="text-red-600" />
   </div>
-  <div className="font-semibold">Booth-wise List</div>
-  <div className="text-xs text-gray-500">View voters by booth</div>
+  <div className="font-semibold dark:text-gray-200">Booth-wise List</div>
+  <div className="text-xs text-gray-500 dark:text-gray-400">View voters by booth</div>
 </a>
 
               <a href="/gallery" className="group bg-white dark:bg-gray-800 rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col gap-3">
                 <div className="p-2 bg-indigo-50 rounded-md"><LucideImage size={22} className="text-indigo-600" /></div>
-                <div className="font-semibold">Gallery</div>
-                <div className="text-xs text-gray-500">Photos & banners</div>
+                <div className="font-semibold dark:text-gray-200">Gallery</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Photos & banners</div>
               </a>
 
               <a href="/work" className="group bg-white dark:bg-gray-800 rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col gap-3">
                 <div className="p-2 bg-emerald-50 rounded-md"><LucideBriefcase size={22} className="text-emerald-600" /></div>
-                <div className="font-semibold">Work</div>
-                <div className="text-xs text-gray-500">Projects & events</div>
+                <div className="font-semibold dark:text-gray-200">Work</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Projects & events</div>
               </a>
 
               <a href="/contact" className="group bg-white dark:bg-gray-800 rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col gap-3">
                 <div className="p-2 bg-sky-50 rounded-md"><LucidePhone size={22} className="text-sky-600" /></div>
-                <div className="font-semibold">Contact</div>
-                <div className="text-xs text-gray-500">Get in touch</div>
+                <div className="font-semibold dark:text-gray-200">Contact</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Get in touch</div>
               </a>
             </div>
           </section>
@@ -233,8 +233,8 @@ export default function Page() {
             <motion.div initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} className="col-span-1 md:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold">आपल्या प्रभागाची माहिती (Ward 16 Overview)</h3>
-                  <p className="text-sm text-gray-500">Snapshot from electoral roll</p>
+                  <h3 className="text-lg font-semibold dark:text-white">आपल्या प्रभागाची माहिती (Ward 16 Overview)</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Snapshot from electoral roll</p>
                 </div>
                 <a href={SNAPSHOT_IMG} className="text-sm underline" target="_blank" rel="noreferrer">Open image</a>
               </div>
@@ -253,8 +253,8 @@ export default function Page() {
                 </div>
               </div>
 
-              <div className="text-2xl font-bold">3,826</div>
-              <p className="text-xs text-gray-500">Registered Voters</p>
+              <div className="text-2xl font-bold dark:text-white">3,826</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Registered Voters</p>
 
               <div className="flex gap-2 mt-auto">
                 <a href="/alphabetical" className="flex-1 px-3 py-2 text-sm bg-blue-600 text-white rounded-md flex items-center gap-1 justify-center">
