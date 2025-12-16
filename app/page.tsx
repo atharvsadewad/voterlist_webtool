@@ -135,7 +135,7 @@ export default function Page() {
 
                 <a
                   href="/alphabetical"
-                  className={`px-5 py-3 rounded-full border font-semibold flex items-center gap-2 transition ${
+                  className={`px-6 py-3 rounded-full bg-white text-gray-900 font-semibold shadow-lg flex items-center gap-2 transition ${
                     darkMode ? "bg-white/20 border-white/30 text-white hover:bg-white/30" : "bg-white/30 border-white/40 text-white hover:opacity-90"
                   }`}
                 >
