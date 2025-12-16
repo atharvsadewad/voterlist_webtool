@@ -133,12 +133,15 @@ export default function Page() {
                   शोधा (Search)
                 </button>
 
-                <a
-                  href="/alphabetical"
-                  className={`px-6 py-3 rounded-full bg-white text-gray-900 font-semibold shadow-lg flex items-center gap-2 transition ${
-                    darkMode ? "bg-white/20 border-white/30 text-white hover:bg-white/30" : "bg-white/30 border-white/40 text-white hover:opacity-90"
-                  }`}
-                >
+              <a
+  href="/alphabetical"
+  className={`px-6 py-3 rounded-full font-semibold shadow-lg flex items-center gap-2 transition ${
+    darkMode
+      ? "bg-white/20 border border-white/30 text-white hover:bg-white/30" // Dark Mode: Glassy + White Text
+      : "bg-white/60 border border-white/40 text-gray-900 hover:bg-white/80" // Light Mode: Semi-transparent White + Dark Text
+  }`}
+>
+                
                   <LucideList size={16} /> Alphabetical
                 </a>
               </div>
